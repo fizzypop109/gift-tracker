@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
 import {Modal, Input, Select, Button} from "@/components";
-import {OCCASIONS, STATUS_OPTIONS} from "@/utils";
+import {STATUS_OPTIONS} from "@/utils";
 import {Gift, Status} from "@/types";
 
 type GiftModalProps = {
     open: boolean;
+    occasions: string[];
     onClose: () => void;
     onSave: (gift: Omit<Gift, "id">) => void;
     initial: Gift | null;
@@ -13,7 +14,7 @@ type GiftModalProps = {
     defaultReceiver?: string;
 }
 
-export const GiftModal = ({ open, onClose, onSave, initial, receivers, defaultOccasion, defaultReceiver }: GiftModalProps) => {
+export const GiftModal = ({ open, occasions, onClose, onSave, initial, receivers, defaultOccasion, defaultReceiver }: GiftModalProps) => {
     const [name, setName] = useState("");
     const [receiverId, setReceiverId] = useState("");
     const [occasion, setOccasion] = useState("Christmas");
@@ -39,7 +40,7 @@ export const GiftModal = ({ open, onClose, onSave, initial, receivers, defaultOc
                 </div>
             </div>
 
-            <Select label="Occasion" options={OCCASIONS} value={occasion} onChange={e => setOccasion(e.target.value)} />
+            <Select label="Occasion" options={occasions} value={occasion} onChange={e => setOccasion(e.target.value)} />
 
             <div style={{ display: "flex", gap: 8 }}>
                 <div style={{ flex: 1 }}>

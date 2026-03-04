@@ -1,12 +1,12 @@
 import clsx from "clsx";
-import {useIsMobile, usePersistedReducer} from "@/hooks";
+import {useIsMobile, useApp} from "@/hooks";
 import {daysUntil, formatDate} from "@/utils";
-import {Receiver, Gift} from "@/types";
+import {Receiver, Gift, ModalState} from "@/types";
 import {Dispatch, SetStateAction} from "react";
 
 type SidebarProps = {
     setSidebarOpen: (open: boolean) => void;
-    setReceiverModal: Dispatch<SetStateAction<Receiver | null>>;
+    setReceiverModal: Dispatch<SetStateAction<ModalState<Receiver>>>;
     view: string;
     setView: (view: string) => void;
     receivers: Receiver[];
@@ -17,12 +17,12 @@ type SidebarProps = {
 export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, receivers, gifts, upcoming }: SidebarProps) => {
     const isMobile = useIsMobile();
 
-    const [dispatch] = usePersistedReducer();
+    const { dispatch } = useApp();
 
     const totalSpent = gifts.filter(g => g.status !== "Idea").reduce((s, g) => s + (parseFloat(g.price) || 0), 0);
 
     return (
-        <div className="w-full">
+        <div className="w-[250px]">
             <div className="flex justify-between items-center mb-[10px]">
                 <span className="text-[11px] font-bold uppercase tracking-[0.8px] text-[#8B7355]">
                     People
@@ -30,7 +30,7 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
 
                 <button
                     className="size-[24px] rounded-[8px] border-[1.5px] border-[#D4C4AE] bg-[#FFF] cursor-pointer text-[13px] flex items-center justify-center font-bold text-[#B8860B]"
-                    onClick={() => setReceiverModal(null)}
+                    onClick={() => setReceiverModal({ open: true, initial: null })}
                 >
                     +
                 </button>
@@ -84,7 +84,7 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
                         {view === r.id && (
                             <div className="flex gap-[4px] mt-[3px] pl-[40px]">
                                 <button
-                                    onClick={() => setReceiverModal(r)}
+                                    onClick={() => setReceiverModal({ open: true, initial: r })}
                                     className="text-[10px] bg-none border-none underline text-[#8B7355] cursor-pointer"
                                 >
                                     Edit
