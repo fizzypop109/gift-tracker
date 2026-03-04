@@ -41,7 +41,7 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
     const totalBudget = listReceivers.reduce((s, r) => s + (budgets[`${r.id}:${config.label}`] || 0), 0);
     const totalSpent = listReceivers.reduce((s, r) => s + occasionGifts.filter(g => g.receiverId === r.id && g.status !== "Idea").reduce((gs, g) => gs + (parseFloat(g.price) || 0), 0), 0);
     const totalGiftsCount = occasionGifts.filter(g => listReceivers.some(r => r.id === g.receiverId)).length;
-    const readyCount = occasionGifts.filter(g => listReceivers.some(r => r.id === g.receiverId) && (g.status === "Wrapped" || g.status === "Given")).length;
+    const readyCount = occasionGifts.filter(g => listReceivers.some(r => r.id === g.receiverId) && (g.status === "Purchased")).length;
 
     return (
         <div>
