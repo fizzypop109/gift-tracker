@@ -118,10 +118,9 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
                     {l: "Ideas", v: gifts.filter(g => g.status === "Idea").length, c: "#FF9800"},
                     {
                         l: "Purchased",
-                        v: gifts.filter(g => g.status === "Purchased" || g.status === "Wrapped").length,
+                        v: gifts.filter(g => g.status === "Purchased").length,
                         c: "#4CAF50"
                     },
-                    {l: "Given", v: gifts.filter(g => g.status === "Given").length, c: "#9C27B0"},
                 ].map(s => <div key={s.l} style={{
                     display: "flex",
                     justifyContent: "space-between",
