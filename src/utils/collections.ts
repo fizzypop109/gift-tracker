@@ -14,6 +14,7 @@ export const DEFAULT_OCCASIONS: OccasionConfig[] = [
         accentColor: "#4CAF50",
         accentGradient: "linear-gradient(135deg, #1B5E20, #2E7D32, #1B5E20)",
         autoAdd: true,
+        scope: "global",
     },
     {
         id: "birthday",
@@ -23,6 +24,7 @@ export const DEFAULT_OCCASIONS: OccasionConfig[] = [
         accentColor: "#E91E63",
         accentGradient: "linear-gradient(135deg, #880E4F, #AD1457, #C2185B)",
         autoAdd: true,
+        scope: "global",
     },
 ];
 
