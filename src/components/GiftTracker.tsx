@@ -89,7 +89,6 @@ export const GiftTracker = () => {
             dispatch({type: "EDIT_OCCASION", payload: config});
         } else {
             dispatch({type: "ADD_OCCASION", payload: config});
-            // Switch to the new tab
             setTab(config.id);
         }
     };
@@ -137,7 +136,7 @@ export const GiftTracker = () => {
     };
 
     return (
-        <div className="w-full font-sans text-[#2D1810] bg-[linear-gradient(180deg,#FBF7F0_0%,#F5EDE0_100%)] min-h-svh">
+        <div className="w-full font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)] min-h-svh">
             <Header
                 tabs={tabs}
                 selectedTab={tab}
@@ -190,17 +189,18 @@ export const GiftTracker = () => {
                     <div className="flex gap-4 flex-col md:flex-row">
                         {isMobile && sidebarOpen && (
                             <div
-                                className="fixed inset-0 bg-[rgba(30,20,10,0.3)] z-[500] animate-[fadeIn_.15s_ease]"
+                                className="fixed inset-0 bg-brown/30 z-[500] animate-[fadeIn_.15s_ease]"
                                 onClick={() => setSidebarOpen(false)}
                             >
                                 <div
-                                    className="absolute top-0 left-0 bottom-0 w-[280px] bg-[#FBF7F0] p-3.5 overflow-y-auto shadow-[4px_0_20px_rgba(0,0,0,0.1)]"
+                                    className="absolute top-0 left-0 bottom-0 w-[280px] bg-cream p-3.5 overflow-y-auto shadow-[4px_0_20px_rgba(0,0,0,0.1)]"
                                     onClick={e => e.stopPropagation()}
                                 >
                                     <div className="flex justify-between items-center mb-3">
-                                        <span className="font-fraunces text-lg font-bold text-[#2D1810]">People</span>
-                                        <button className="bg-none border-none text-lg cursor-pointer text-[#8B7355]" onClick={() => setSidebarOpen(false)}>✕</button>
+                                        <span className="font-fraunces text-lg font-bold text-brown">People</span>
+                                        <button className="bg-transparent border-none text-lg cursor-pointer text-brown-muted" onClick={() => setSidebarOpen(false)}>✕</button>
                                     </div>
+
                                     <Sidebar
                                         view={view}
                                         setView={setView}
@@ -228,9 +228,9 @@ export const GiftTracker = () => {
 
                         <div className="flex-1 min-w-0">
                             {isMobile && selectedReceiver && (
-                                <div className="flex items-center gap-1.5 mb-2.5 px-2.5 py-1.5 bg-[#FFF8E1] rounded-full border-[1.5px] border-[#DAA520] w-fit text-xs font-semibold">
+                                <div className="flex items-center gap-1.5 mb-2.5 px-2.5 py-1.5 bg-gold-tint rounded-full border-[1.5px] border-gold-light w-fit text-xs font-semibold">
                                     {selectedReceiver.emoji} {selectedReceiver.name}
-                                    <button className="bg-none border-none cursor-pointer text-xs text-[#8B7355] ml-1" onClick={() => setView("all")}>✕</button>
+                                    <button className="bg-transparent border-none cursor-pointer text-xs text-brown-muted ml-1" onClick={() => setView("all")}>✕</button>
                                 </div>
                             )}
 
@@ -241,14 +241,14 @@ export const GiftTracker = () => {
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                     className={clsx(
-                                        "flex-1 py-[7px] px-2.5 border-[1.5px] border-[#D4C4AE] rounded-[10px] text-xs font-sans bg-white outline-none",
+                                        "flex-1 py-[7px] px-2.5 border-[1.5px] border-tan rounded-[10px] text-xs font-sans bg-white outline-none focus:border-gold",
                                         isMobile ? "min-w-[100px]" : "min-w-[120px]"
                                     )}
                                 />
                                 <select
                                     value={filterOccasion}
                                     onChange={e => setFilterOccasion(e.target.value)}
-                                    className="py-[7px] px-2 border-[1.5px] border-[#D4C4AE] rounded-[10px] text-[11px] font-sans bg-white"
+                                    className="py-[7px] px-2 border-[1.5px] border-tan rounded-[10px] text-[11px] font-sans bg-white"
                                 >
                                     <option value="All">All Occasions</option>
                                     {occasionLabels.map(o => (
@@ -258,7 +258,7 @@ export const GiftTracker = () => {
                                 <select
                                     value={filterStatus}
                                     onChange={e => setFilterStatus(e.target.value)}
-                                    className="py-[7px] px-2 border-[1.5px] border-[#D4C4AE] rounded-[10px] text-[11px] font-sans bg-white"
+                                    className="py-[7px] px-2 border-[1.5px] border-tan rounded-[10px] text-[11px] font-sans bg-white"
                                 >
                                     <option value="All">All Status</option>
                                     {STATUS_OPTIONS.map(s => (
@@ -271,18 +271,20 @@ export const GiftTracker = () => {
                             </div>
 
                             {budgetInfo && (
-                                <div className="mb-3 p-2.5 px-3.5 bg-white rounded-[10px] border border-[#EDE5D8]">
+                                <div className="mb-3 p-2.5 px-3.5 bg-white rounded-[10px] border border-cream-border">
                                     <div className="flex justify-between text-[11px] mb-1">
-                                        <span className="text-[#8B7355]">Budget</span>
-                                        <span className={clsx("font-semibold", budgetInfo.spent > budgetInfo.budget ? "text-[#C62828]" : "text-[#2D1810]")}>
+                                        <span className="text-brown-muted">Budget</span>
+                                        <span className={clsx("font-semibold", budgetInfo.spent > budgetInfo.budget ? "text-danger" : "text-brown")}>
                                             ${budgetInfo.spent.toFixed(2)} / ${budgetInfo.budget.toFixed(2)}
                                         </span>
                                     </div>
-                                    <div className="h-[5px] bg-[#EDE5D8] rounded-sm overflow-hidden">
+                                    <div className="h-[5px] bg-cream-border rounded-sm overflow-hidden">
                                         <div
                                             className={clsx(
                                                 "h-full rounded-sm transition-[width] duration-300",
-                                                budgetInfo.spent > budgetInfo.budget ? "bg-[#EF5350]" : "bg-[linear-gradient(90deg,#B8860B,#DAA520)]"
+                                                budgetInfo.spent > budgetInfo.budget
+                                                    ? "bg-danger-bar"
+                                                    : "bg-[linear-gradient(90deg,var(--color-gold),var(--color-gold-light))]"
                                             )}
                                             style={{width: `${budgetInfo.pct}%`}}
                                         />
@@ -291,9 +293,9 @@ export const GiftTracker = () => {
                             )}
 
                             {filteredGifts.length === 0 ? (
-                                <div className="text-center py-12 px-4 text-[#8B7355]">
+                                <div className="text-center py-12 px-4 text-brown-muted">
                                     <div className="text-[44px] mb-2.5">🎀</div>
-                                    <div className="font-fraunces text-[17px] font-semibold mb-1.5 text-[#2D1810]">
+                                    <div className="font-fraunces text-[17px] font-semibold mb-1.5 text-brown">
                                         {gifts.length === 0 ? "No gifts yet" : "No matches"}
                                     </div>
                                     <p className="text-xs leading-normal max-w-[260px] mx-auto">

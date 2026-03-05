@@ -10,6 +10,46 @@
   --color-foreground: var(--foreground);
   --font-fraunces: 'Fraunces', serif;
   --font-sans: 'DM Sans', sans-serif;
+
+  /* Brown palette */
+  --color-brown: #2D1810;
+  --color-brown-deep: #4A2C1A;
+  --color-brown-mid: #5D4E37;
+  --color-brown-muted: #8B7355;
+
+  /* Cream / tan palette */
+  --color-cream: #FBF7F0;
+  --color-cream-warm: #F5EDE0;
+  --color-cream-border: #EDE5D8;
+  --color-cream-subtle: #E8DDD0;
+  --color-tan: #D4C4AE;
+
+  /* Gold / accent */
+  --color-gold: #B8860B;
+  --color-gold-light: #DAA520;
+  --color-gold-tint: #FFF8E1;
+
+  /* Neutral surface */
+  --color-surface: #FFFBF5;
+
+  /* Idea status */
+  --color-idea-bg: #FFF3E0;
+  --color-idea-text: #E65100;
+  --color-idea-dot: #FF9800;
+
+  /* Purchased status */
+  --color-purchased-card: #F6FFF6;
+  --color-purchased-bg: #E8F5E9;
+  --color-purchased-border: #C8E6C9;
+  --color-purchased-notes: #A5D6A7;
+  --color-purchased: #4CAF50;
+  --color-purchased-text: #1B5E20;
+
+  /* Danger */
+  --color-danger: #C62828;
+  --color-danger-border: #FFCDD2;
+  --color-danger-hover: #FFF0F0;
+  --color-danger-bar: #EF5350;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,7 +75,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D4C4AE;
+  background: var(--color-tan);
   border-radius: 3px;
 }
 

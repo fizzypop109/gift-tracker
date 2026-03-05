@@ -14,20 +14,31 @@ export const BudgetModal = ({ open, onClose, onSave, receivers, budgets, occasio
     const [lb, setLb] = useState({});
     useEffect(() => { setLb({ ...budgets }); }, [budgets, open]);
     const occs = occasionFilter ? [occasionFilter] : ["Christmas", "Birthday"];
+
     return (
         <Modal open={open} onClose={onClose} title="Set Budgets">
-            <p style={{ fontSize: 12, color: "#8B7355", margin: "0 0 14px", lineHeight: 1.5 }}>Spending limit per person per occasion.</p>
+            <p className="text-xs text-brown-muted mb-[14px] leading-[1.5]">Spending limit per person per occasion.</p>
             {receivers.map(r => occs.map(occ => {
                 const key = `${r.id}:${occ}`;
-                return <div key={key} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <span style={{ fontSize: 12, color: "#2D1810", flex: 1, fontWeight: 500 }}>{r.emoji} {r.name}{occs.length > 1 ? ` — ${occ}` : ""}</span>
-                    <input type="number" min="0" step="1" value={lb[key] || ""} onChange={e => setLb(b => ({ ...b, [key]: e.target.value }))} placeholder="$"
-                           style={{ width: 80, padding: "6px 8px", border: "1.5px solid #D4C4AE", borderRadius: 8, fontSize: 12, fontFamily: "'DM Sans', sans-serif", textAlign: "right" }} />
-                </div>;
+                return (
+                    <div key={key} className="flex items-center gap-2 mb-2">
+                        <span className="text-xs text-brown flex-1 font-medium">{r.emoji} {r.name}{occs.length > 1 ? ` — ${occ}` : ""}</span>
+                        <input
+                            type="number" min="0" step="1"
+                            value={lb[key] || ""}
+                            onChange={e => setLb(b => ({ ...b, [key]: e.target.value }))}
+                            placeholder="$"
+                            className="w-20 py-[6px] px-2 border-[1.5px] border-tan rounded-lg text-xs font-sans text-right"
+                        />
+                    </div>
+                );
             }))}
-            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 16 }}>
+            <div className="flex gap-2 justify-end mt-4">
                 <Button variant="secondary" onClick={onClose}>Cancel</Button>
-                <Button onClick={() => { Object.entries(lb).forEach(([k, v]) => onSave(k, parseFloat(v) || 0)); onClose(); }}>Save</Button>
+                <Button onClick={() => {
+                    Object.entries(lb).forEach(([k, v]) => onSave(k, parseFloat(v) || 0));
+                    onClose();
+                }}>Save</Button>
             </div>
         </Modal>
     );

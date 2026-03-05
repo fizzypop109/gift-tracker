@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import {useState} from "react";
 import {Button, ListManageModal, BudgetModal} from "@/components";
-import {daysUntil, STATUS_COLORS} from "@/utils";
+import {daysUntil} from "@/utils";
 import {GiftCard} from "@/components/GiftCard";
 import {useIsMobile, useApp} from "@/hooks";
 import {Gift, Receiver, Status, OccasionConfig} from "@/types";
@@ -41,45 +42,51 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
     const totalBudget = listReceivers.reduce((s, r) => s + (budgets[`${r.id}:${config.label}`] || 0), 0);
     const totalSpent = listReceivers.reduce((s, r) => s + occasionGifts.filter(g => g.receiverId === r.id && g.status !== "Idea").reduce((gs, g) => gs + (parseFloat(g.price) || 0), 0), 0);
     const totalGiftsCount = occasionGifts.filter(g => listReceivers.some(r => r.id === g.receiverId)).length;
-    const readyCount = occasionGifts.filter(g => listReceivers.some(r => r.id === g.receiverId) && (g.status === "Purchased")).length;
+    const readyCount = occasionGifts.filter(g => listReceivers.some(r => r.id === g.receiverId) && g.status === "Purchased").length;
 
     return (
         <div>
-            {/* Themed header */}
-            <div style={{ background: config.accentGradient, borderRadius: isMobile ? 12 : 16, padding: isMobile ? "18px 16px 14px" : "22px 22px 18px", marginBottom: 16, position: "relative", overflow: "hidden" }}>
-                <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 15% 85%, rgba(255,215,0,0.1) 0%, transparent 50%), radial-gradient(circle at 85% 15%, rgba(255,255,255,0.06) 0%, transparent 50%)" }} />
+            {/* Themed header — gradient is dynamic so background stays inline */}
+            <div
+                className={clsx(
+                    "relative overflow-hidden mb-4",
+                    isMobile ? "rounded-xl p-[18px_16px_14px]" : "rounded-2xl p-[22px_22px_18px]"
+                )}
+                style={{ background: config.accentGradient }}
+            >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_85%,rgba(255,215,0,0.1)_0%,transparent_50%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.06)_0%,transparent_50%)]" />
 
-                <div style={{ position: "relative" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14, gap: 8, flexWrap: "wrap" }}>
+                <div className="relative">
+                    <div className="flex justify-between items-start mb-[14px] gap-2 flex-wrap">
                         <div>
-                            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: isMobile ? 20 : 24, fontWeight: 800, color: "#FFF", margin: 0 }}>
+                            <h2 className={clsx("font-fraunces font-extrabold text-white m-0", isMobile ? "text-xl" : "text-2xl")}>
                                 {config.icon} {config.label}
                             </h2>
-
-                            <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, margin: "3px 0 0" }}>
+                            <p className="text-white/70 text-xs mt-[3px] mb-0">
                                 {headerSubtitle}
                             </p>
                         </div>
 
-                        <div style={{ display: "flex", gap: 6 }}>
-                            <Button variant="secondary" small onClick={() => setBudgetOpen(true)} style={{ background: "rgba(255,255,255,0.12)", color: "#FFF", border: "1px solid rgba(255,255,255,0.2)" }}>💰</Button>
-                            <Button variant="secondary" small onClick={() => setManageOpen(true)} style={{ background: "rgba(255,255,255,0.12)", color: "#FFF", border: "1px solid rgba(255,255,255,0.2)" }}>👥 Manage</Button>
-                            <Button variant="secondary" small onClick={onEditOccasion} style={{ background: "rgba(255,255,255,0.12)", color: "#FFF", border: "1px solid rgba(255,255,255,0.2)" }}>✏️</Button>
-                            <Button variant="secondary" small onClick={onDeleteOccasion} style={{ background: "rgba(255,255,255,0.12)", color: "#FFF", border: "1px solid rgba(255,255,255,0.2)" }}>🗑</Button>
+                        <div className="flex gap-1.5">
+                            <Button variant="secondary" small onClick={() => setBudgetOpen(true)} className="!bg-white/[12%] !text-white !border-white/20">💰</Button>
+                            <Button variant="secondary" small onClick={() => setManageOpen(true)} className="!bg-white/[12%] !text-white !border-white/20">👥 Manage</Button>
+                            <Button variant="secondary" small onClick={onEditOccasion} className="!bg-white/[12%] !text-white !border-white/20">✏️</Button>
+                            <Button variant="secondary" small onClick={onDeleteOccasion} className="!bg-white/[12%] !text-white !border-white/20">🗑</Button>
                         </div>
                     </div>
 
-                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 8 }}>
+                    <div className={clsx("grid gap-2", isMobile ? "grid-cols-2" : "grid-cols-4")}>
                         {[
-                            { label: "People", value: listReceivers.length, color: "#FFF" },
-                            { label: "Gifts", value: `${readyCount}/${totalGiftsCount}`, color: "#A5D6A7" },
-                            { label: "Spent", value: `$${totalSpent.toFixed(0)}`, sub: totalBudget ? `/$${totalBudget.toFixed(0)}` : "", color: "#FFD54F" },
-                            { label: countdownLabel, value: countdownDays, color: "#EF9A9A" },
+                            { label: "People", value: listReceivers.length, className: "text-white" },
+                            { label: "Gifts", value: `${readyCount}/${totalGiftsCount}`, className: "text-[#A5D6A7]" },
+                            { label: "Spent", value: `$${totalSpent.toFixed(0)}`, sub: totalBudget ? `/$${totalBudget.toFixed(0)}` : "", className: "text-[#FFD54F]" },
+                            { label: countdownLabel, value: countdownDays, className: "text-[#EF9A9A]" },
                         ].map(s => (
-                            <div key={s.label} style={{ background: "rgba(255,255,255,0.08)", borderRadius: 8, padding: isMobile ? "8px 10px" : "8px 12px", border: "1px solid rgba(255,255,255,0.06)" }}>
-                                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: 0.4 }}>{s.label}</div>
-                                <div style={{ fontFamily: "'Fraunces', serif", fontSize: isMobile ? 17 : 19, fontWeight: 700, color: s.color, marginTop: 1 }}>
-                                    {s.value}{s.sub && <span style={{ fontSize: 10, fontWeight: 400, opacity: 0.6 }}>{s.sub}</span>}
+                            <div key={s.label} className={clsx("bg-white/[8%] rounded-lg border border-white/[6%]", isMobile ? "px-[10px] py-2" : "px-3 py-2")}>
+                                <div className="text-[9px] text-white/50 uppercase tracking-[0.4px]">{s.label}</div>
+                                <div className={clsx("font-fraunces font-bold mt-px", isMobile ? "text-[17px]" : "text-[19px]", s.className)}>
+                                    {s.value}
+                                    {s.sub && <span className="text-[10px] font-normal opacity-60">{s.sub}</span>}
                                 </div>
                             </div>
                         ))}
@@ -89,19 +96,19 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
 
             {/* Person accordion */}
             {sortedReceivers.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "50px 20px", color: "#8B7355" }}>
-                    <div style={{ fontSize: 44, marginBottom: 10 }}>{config.icon}</div>
-                    <div style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 600, marginBottom: 6, color: "#2D1810" }}>{config.label} list is empty</div>
-                    <p style={{ fontSize: 12, lineHeight: 1.5, maxWidth: 280, margin: "0 auto 14px" }}>
+                <div className="text-center py-[50px] px-5 text-brown-muted">
+                    <div className="text-[44px] mb-2.5">{config.icon}</div>
+                    <div className="font-fraunces text-[17px] font-semibold mb-1.5 text-brown">{config.label} list is empty</div>
+                    <p className="text-xs leading-[1.5] max-w-[280px] mx-auto mb-[14px]">
                         {receivers.length === 0 ? "Add someone to get started!" : "Add people to this list to start tracking."}
                     </p>
-                    <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+                    <div className="flex gap-2 justify-center flex-wrap">
                         {receivers.length === 0 && <Button small onClick={onAddPerson}>+ Add Person</Button>}
                         {receivers.length > 0 && <Button small onClick={() => setManageOpen(true)}>👥 Manage List</Button>}
                     </div>
                 </div>
             ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div className="flex flex-col gap-[10px]">
                     {sortedReceivers.map(r => {
                         const pg = occasionGifts.filter(g => g.receiverId === r.id);
                         const spent = pg.filter(g => g.status !== "Idea").reduce((s, g) => s + (parseFloat(g.price) || 0), 0);
@@ -110,40 +117,83 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
                         const bdayInfo = config.id === "birthday" && r.birthday ? `${daysUntil(r.birthday)} day${daysUntil(r.birthday) !== 1 ? "s" : ""} away` : null;
 
                         return (
-                            <div key={r.id} style={{ background: "#FFF", borderRadius: 12, border: "1px solid #EDE5D8", overflow: "hidden" }}>
-                                <button onClick={() => setExpanded(isExpanded ? null : r.id)}
-                                        style={{ display: "flex", alignItems: "center", width: "100%", padding: isMobile ? "12px" : "14px 16px", background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", textAlign: "left", gap: 10 }}>
-                                    <span style={{ fontSize: isMobile ? 24 : 26 }}>{r.emoji}</span>
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                        <div style={{ fontWeight: 600, fontSize: isMobile ? 14 : 15, color: "#2D1810" }}>{r.name}</div>
-                                        <div style={{ fontSize: 11, color: "#8B7355", marginTop: 1 }}>
+                            <div key={r.id} className="bg-white rounded-xl border border-cream-border overflow-hidden">
+                                <button
+                                    onClick={() => setExpanded(isExpanded ? null : r.id)}
+                                    className={clsx(
+                                        "flex items-center w-full bg-transparent border-none cursor-pointer font-sans text-left gap-[10px]",
+                                        isMobile ? "p-3" : "px-4 py-[14px]"
+                                    )}
+                                >
+                                    <span className={clsx(isMobile ? "text-2xl" : "text-[26px]")}>{r.emoji}</span>
+                                    <div className="flex-1 min-w-0">
+                                        <div className={clsx("font-semibold text-brown", isMobile ? "text-sm" : "text-[15px]")}>{r.name}</div>
+                                        <div className="text-[11px] text-brown-muted mt-px">
                                             {pg.length} gift{pg.length !== 1 ? "s" : ""}
                                             {budget > 0 && ` · $${spent.toFixed(0)}/$${budget.toFixed(0)}`}
                                             {bdayInfo && ` · ${bdayInfo}`}
                                         </div>
                                     </div>
-                                    <div style={{ display: "flex", gap: 3, marginRight: 8, flexShrink: 0 }}>
-                                        {pg.slice(0, 8).map(g => <span key={g.id} style={{ width: 7, height: 7, borderRadius: "50%", background: STATUS_COLORS[g.status]?.dot }} />)}
-                                        {pg.length === 0 && <span style={{ fontSize: 10, color: "#ccc" }}>—</span>}
+                                    <div className="flex gap-[3px] mr-2 shrink-0">
+                                        {pg.slice(0, 8).map(g => (
+                                            <span
+                                                key={g.id}
+                                                className={clsx(
+                                                    "w-[7px] h-[7px] rounded-full",
+                                                    g.status === "Purchased" ? "bg-purchased" : "bg-idea-dot"
+                                                )}
+                                            />
+                                        ))}
+                                        {pg.length === 0 && <span className="text-[10px] text-cream-border">—</span>}
                                     </div>
-                                    <span style={{ fontSize: 12, color: "#8B7355", transition: "transform .2s", transform: isExpanded ? "rotate(180deg)" : "none", flexShrink: 0 }}>▼</span>
+                                    <span
+                                        className="text-xs text-brown-muted shrink-0 transition-transform duration-200"
+                                        style={{ transform: isExpanded ? "rotate(180deg)" : "none" }}
+                                    >
+                                        ▼
+                                    </span>
                                 </button>
-                                {budget > 0 && <div style={{ padding: "0 16px 6px" }}><div style={{ height: 3, background: "#EDE5D8", borderRadius: 2, overflow: "hidden" }}><div style={{ height: "100%", width: `${Math.min((spent / budget) * 100, 100)}%`, background: spent > budget ? "#EF5350" : config.accentColor, borderRadius: 2, transition: "width .3s" }} /></div></div>}
+
+                                {budget > 0 && (
+                                    <div className="px-4 pb-[6px]">
+                                        <div className="h-[3px] bg-cream-border rounded-sm overflow-hidden">
+                                            <div
+                                                className="h-full rounded-sm transition-[width] duration-300"
+                                                style={{
+                                                    width: `${Math.min((spent / budget) * 100, 100)}%`,
+                                                    background: spent > budget ? "var(--color-danger-bar)" : config.accentColor,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
                                 {isExpanded && (
-                                    <div style={{ padding: isMobile ? "8px 12px 14px" : "8px 16px 14px", borderTop: "1px solid #F0E8DB" }}>
-                                        {pg.length === 0 ? <div style={{ textAlign: "center", padding: "12px 0", color: "#8B7355", fontSize: 12 }}>No gifts yet</div>
-                                            : <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>{pg.map(g => <GiftCard key={g.id} gift={g} receiver={r} onEdit={onEditGift} onDelete={onDeleteGift} onStatusChange={onStatusChange} compact isMobile={isMobile} />)}</div>}
-                                        <Button small onClick={() => onOpenGiftModal(r.id)} style={{ width: "100%", textAlign: "center" }}>+ Add Gift for {r.name}</Button>
+                                    <div className={clsx(
+                                        "border-t border-cream-warm",
+                                        isMobile ? "px-3 pt-2 pb-[14px]" : "px-4 pt-2 pb-[14px]"
+                                    )}>
+                                        {pg.length === 0 ? (
+                                            <div className="text-center py-3 text-brown-muted text-xs">No gifts yet</div>
+                                        ) : (
+                                            <div className="flex flex-col gap-1.5 mb-[10px]">
+                                                {pg.map(g => (
+                                                    <GiftCard key={g.id} gift={g} receiver={r} onEdit={onEditGift} onDelete={onDeleteGift} onStatusChange={onStatusChange} compact isMobile={isMobile} />
+                                                ))}
+                                            </div>
+                                        )}
+                                        <Button small onClick={() => onOpenGiftModal(r.id)} className="w-full text-center">+ Add Gift for {r.name}</Button>
                                     </div>
                                 )}
                             </div>
                         );
                     })}
+
                     {/* Quick add person */}
-                    <button onClick={onAddPerson}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: isMobile ? "14px" : "16px", borderRadius: 12, border: "2px dashed #D4C4AE", background: "transparent", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: "#8B7355", transition: "all .15s", width: "100%" }}
-                            onMouseEnter={e => { e.currentTarget.style.borderColor = config.accentColor; e.currentTarget.style.color = config.accentColor; e.currentTarget.style.background = `${config.accentColor}08`; }}
-                            onMouseLeave={e => { e.currentTarget.style.borderColor = "#D4C4AE"; e.currentTarget.style.color = "#8B7355"; e.currentTarget.style.background = "transparent"; }}>
+                    <button
+                        onClick={onAddPerson}
+                        className="flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-tan bg-transparent cursor-pointer font-sans text-[13px] font-semibold text-brown-muted transition-all duration-150 w-full hover:border-gold hover:text-gold"
+                    >
                         + Add New Person
                     </button>
                 </div>

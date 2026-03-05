@@ -16,7 +16,6 @@ type SidebarProps = {
 
 export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, receivers, gifts, upcoming }: SidebarProps) => {
     const isMobile = useIsMobile();
-
     const { dispatch } = useApp();
 
     const totalSpent = gifts.filter(g => g.status !== "Idea").reduce((s, g) => s + (parseFloat(g.price) || 0), 0);
@@ -24,12 +23,11 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
     return (
         <div className="w-[250px]">
             <div className="flex justify-between items-center mb-[10px]">
-                <span className="text-[11px] font-bold uppercase tracking-[0.8px] text-[#8B7355]">
+                <span className="text-[11px] font-bold uppercase tracking-[0.8px] text-brown-muted">
                     People
                 </span>
-
                 <button
-                    className="size-[24px] rounded-[8px] border-[1.5px] border-[#D4C4AE] bg-[#FFF] cursor-pointer text-[13px] flex items-center justify-center font-bold text-[#B8860B]"
+                    className="size-[24px] rounded-[8px] border-[1.5px] border-tan bg-white cursor-pointer text-[13px] flex items-center justify-center font-bold text-gold"
                     onClick={() => setReceiverModal({ open: true, initial: null })}
                 >
                     +
@@ -43,13 +41,12 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
                         if (isMobile) setSidebarOpen(false);
                     }}
                     className={clsx(
-                        "flex font-sans cursor-pointer w-full text-left text-[13px] font-[600] text-[#2D1810] items-center gap-[8px] px-[9px] py-[12px] rounded-[10px]",
-                        view === "all" ? "border-[2px] border-[#B8860B] bg-[#FFF8E1]" : "border-[1.5px] border-[#EDE5D8] bg-[#FFF]",
+                        "flex font-sans cursor-pointer w-full text-left text-[13px] font-[600] text-brown items-center gap-[8px] px-[9px] py-[12px] rounded-[10px]",
+                        view === "all" ? "border-2 border-gold bg-gold-tint" : "border-[1.5px] border-cream-border bg-white",
                     )}
                 >
                     📋 All Gifts
-
-                    <span className="ml-auto text-[11px] text-[#8B7355]">
+                    <span className="ml-auto text-[11px] text-brown-muted">
                         {gifts.length}
                     </span>
                 </button>
@@ -63,19 +60,13 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
                             }}
                             className={clsx(
                                 "flex font-sans items-center gap-[8px] px-[9px] py-[12px] rounded-[10px] w-full text-left cursor-pointer",
-                                view === r.id ? "border-2 border-[#B8860B] bg-[#FFF8E1]" : "border-[1.5px] border-[#EDE5D8] bg-[#FFF]",
+                                view === r.id ? "border-2 border-gold bg-gold-tint" : "border-[1.5px] border-cream-border bg-white",
                             )}
                         >
-                            <span className="text-[20px]">
-                                {r.emoji}
-                            </span>
-
+                            <span className="text-[20px]">{r.emoji}</span>
                             <div className="flex-1 min-w-0">
-                                <div className="text-[13px] font-semibold text-[#2D1810] truncate">
-                                    {r.name}
-                                </div>
-
-                                <div className="text-[10px] text-[#8B7355]">
+                                <div className="text-[13px] font-semibold text-brown truncate">{r.name}</div>
+                                <div className="text-[10px] text-brown-muted">
                                     {gifts.filter(g => g.receiverId === r.id).length} gifts{r.birthday ? ` · ${formatDate(r.birthday)}` : ""}
                                 </div>
                             </div>
@@ -85,13 +76,12 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
                             <div className="flex gap-[4px] mt-[3px] pl-[40px]">
                                 <button
                                     onClick={() => setReceiverModal({ open: true, initial: r })}
-                                    className="text-[10px] bg-none border-none underline text-[#8B7355] cursor-pointer"
+                                    className="text-[10px] bg-transparent border-none underline text-brown-muted cursor-pointer"
                                 >
                                     Edit
                                 </button>
-
                                 <button
-                                    className="text-[10px] bg-none border-none underline text-[#C62828] cursor-pointer"
+                                    className="text-[10px] bg-transparent border-none underline text-danger cursor-pointer"
                                     onClick={() => {
                                         if (confirm(`Remove ${r.name}?`)) {
                                             dispatch({type: "DELETE_RECEIVER", payload: r.id});
@@ -108,75 +98,47 @@ export const Sidebar = ({ setSidebarOpen, setReceiverModal, view, setView, recei
             </div>
 
             {/* Stats card */}
-            <div className="mt-[16px] bg-white rounded-[10px] border-1 border-[#EDE5D8] p-[12px]">
-                <span className="text-[10px] font-bold uppercase tracking-[0.8px] text-[#8B7355] mb-[8px] block">
+            <div className="mt-4 bg-white rounded-[10px] border border-cream-border p-3">
+                <span className="text-[10px] font-bold uppercase tracking-[0.8px] text-brown-muted mb-2 block">
                     Overview
                 </span>
-
                 {[
-                    {l: "Total Spent", v: `$${totalSpent.toFixed(2)}`, c: "#B8860B"},
-                    {l: "Ideas", v: gifts.filter(g => g.status === "Idea").length, c: "#FF9800"},
-                    {
-                        l: "Purchased",
-                        v: gifts.filter(g => g.status === "Purchased").length,
-                        c: "#4CAF50"
-                    },
-                ].map(s => <div key={s.l} style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "5px 0",
-                    borderBottom: "1px solid #F5EDE0"
-                }}>
-
-                    <span className="text-[11px] text-[#8B7355]">
-                        {s.l}
-                    </span>
-
-                    <span
-                        className="text-[15px] font-bold font-fraunces"
-                        style={{ color: s.c }}
-                    >
-                        {s.v}
-                    </span>
-                </div>
-                )}
+                    { l: "Total Spent", v: `$${totalSpent.toFixed(2)}`, c: "text-gold" },
+                    { l: "Ideas", v: gifts.filter(g => g.status === "Idea").length, c: "text-idea-dot" },
+                    { l: "Purchased", v: gifts.filter(g => g.status === "Purchased").length, c: "text-purchased" },
+                ].map(s => (
+                    <div key={s.l} className="flex justify-between py-[5px] border-b border-cream-warm">
+                        <span className="text-[11px] text-brown-muted">{s.l}</span>
+                        <span className={clsx("text-[15px] font-bold font-fraunces", s.c)}>{s.v}</span>
+                    </div>
+                ))}
             </div>
 
-            {upcoming.length > 0 && <div style={{marginTop: 14}}>
-                <span style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.8,
-                    color: "#8B7355",
-                    display: "block",
-                    marginBottom: 6
-                }}>
-                    Upcoming
-                </span>
-
-                {upcoming.map(r => <div key={r.id} style={{
-                    padding: "7px 9px",
-                    borderRadius: 8,
-                    background: daysUntil(r.birthday) <= 14 ? "#FFF3E0" : "#FFF",
-                    border: "1px solid #EDE5D8",
-                    marginBottom: 5,
-                    fontSize: 11
-                }}>
-                    <span style={{fontWeight: 600}}>
-                        {r.emoji} {r.name}
+            {/* Upcoming birthdays */}
+            {upcoming.length > 0 && (
+                <div className="mt-[14px]">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.8px] text-brown-muted block mb-[6px]">
+                        Upcoming
                     </span>
-
-                    <div
-                        className={clsx(
-                            "mt-px",
-                            daysUntil(r.birthday) <= 14 ? "text-[#E65100]" : "text-[#8B7355]"
-                        )}
-                    >
-                        {formatDate(r.birthday)} · {daysUntil(r.birthday)}d away
-                    </div>
-                </div>)}
-            </div>}
+                    {upcoming.map(r => (
+                        <div
+                            key={r.id}
+                            className={clsx(
+                                "px-[9px] py-[7px] rounded-lg border border-cream-border mb-[5px] text-[11px]",
+                                daysUntil(r.birthday) <= 14 ? "bg-idea-bg" : "bg-white"
+                            )}
+                        >
+                            <span className="font-semibold">{r.emoji} {r.name}</span>
+                            <div className={clsx(
+                                "mt-px",
+                                daysUntil(r.birthday) <= 14 ? "text-idea-text" : "text-brown-muted"
+                            )}>
+                                {formatDate(r.birthday)} · {daysUntil(r.birthday)}d away
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

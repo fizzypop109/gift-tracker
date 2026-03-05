@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import {useState, useEffect} from "react";
 import {Modal, Input, Button} from "@/components";
 import {OccasionConfig, OccasionDateType} from "@/types";
@@ -90,11 +91,17 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
             <Input label="Name" value={label} onChange={e => setLabel(e.target.value)} placeholder="e.g. Easter" />
 
             <div className="mb-3">
-                <span className="block text-[10px] font-semibold uppercase tracking-wider text-[#8B7355] mb-1">Icon</span>
+                <span className="block text-[10px] font-semibold uppercase tracking-wider text-brown-muted mb-1">Icon</span>
                 <div className="flex flex-wrap gap-1.5">
                     {ICONS.map(e => (
-                        <button key={e} onClick={() => setIcon(e)}
-                                className={`w-9 h-9 rounded-lg text-lg cursor-pointer ${icon === e ? "border-2 border-[#B8860B] bg-[#FFF8E1]" : "border border-[#E8DDD0] bg-white"}`}>
+                        <button
+                            key={e}
+                            onClick={() => setIcon(e)}
+                            className={clsx(
+                                "w-9 h-9 rounded-lg text-lg cursor-pointer",
+                                icon === e ? "border-2 border-gold bg-gold-tint" : "border border-cream-subtle bg-white"
+                            )}
+                        >
                             {e}
                         </button>
                     ))}
@@ -102,26 +109,38 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
             </div>
 
             <div className="mb-3">
-                <span className="block text-[10px] font-semibold uppercase tracking-wider text-[#8B7355] mb-1">Colour</span>
+                <span className="block text-[10px] font-semibold uppercase tracking-wider text-brown-muted mb-1">Colour</span>
                 <div className="flex flex-wrap gap-1.5">
                     {COLORS.map((c, i) => (
-                        <button key={c.color} onClick={() => setColorIdx(i)}
-                                className={`w-8 h-8 rounded-full cursor-pointer ${colorIdx === i ? "ring-2 ring-offset-2 ring-[#B8860B]" : ""}`}
-                                style={{ background: c.gradient }} />
+                        <button
+                            key={c.color}
+                            onClick={() => setColorIdx(i)}
+                            className={clsx(
+                                "w-8 h-8 rounded-full cursor-pointer",
+                                colorIdx === i ? "ring-2 ring-offset-2 ring-gold" : ""
+                            )}
+                            style={{ background: c.gradient }}
+                        />
                     ))}
                 </div>
             </div>
 
             <div className="mb-3">
-                <span className="block text-[10px] font-semibold uppercase tracking-wider text-[#8B7355] mb-1">When</span>
+                <span className="block text-[10px] font-semibold uppercase tracking-wider text-brown-muted mb-1">When</span>
                 <div className="flex flex-wrap gap-1.5 mb-2">
                     {([
                         { value: "fixed", label: "Same date every year" },
                         { value: "per-person", label: "Different per person" },
                         { value: "custom", label: "Specific date" },
                     ] as const).map(opt => (
-                        <button key={opt.value} onClick={() => setDateType(opt.value)}
-                                className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer font-sans ${dateType === opt.value ? "border-2 border-[#B8860B] bg-[#FFF8E1]" : "border border-[#E8DDD0] bg-white"}`}>
+                        <button
+                            key={opt.value}
+                            onClick={() => setDateType(opt.value)}
+                            className={clsx(
+                                "px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer font-sans",
+                                dateType === opt.value ? "border-2 border-gold bg-gold-tint" : "border border-cream-subtle bg-white"
+                            )}
+                        >
                             {opt.label}
                         </button>
                     ))}
@@ -129,12 +148,18 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
 
                 {dateType === "fixed" && (
                     <div className="flex gap-2">
-                        <select value={month} onChange={e => setMonth(Number(e.target.value))}
-                                className="flex-1 p-2 border border-[#D4C4AE] rounded-lg text-sm font-sans bg-white">
+                        <select
+                            value={month}
+                            onChange={e => setMonth(Number(e.target.value))}
+                            className="flex-1 p-2 border border-tan rounded-lg text-sm font-sans bg-white"
+                        >
                             {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
                         </select>
-                        <input type="number" min={1} max={31} value={day} onChange={e => setDay(Number(e.target.value))}
-                               className="w-16 p-2 border border-[#D4C4AE] rounded-lg text-sm font-sans bg-white text-center" />
+                        <input
+                            type="number" min={1} max={31} value={day}
+                            onChange={e => setDay(Number(e.target.value))}
+                            className="w-16 p-2 border border-tan rounded-lg text-sm font-sans bg-white text-center"
+                        />
                     </div>
                 )}
 
@@ -143,16 +168,20 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
                 )}
 
                 {dateType === "per-person" && (
-                    <p className="text-xs text-[#8B7355]">
+                    <p className="text-xs text-brown-muted">
                         Each person will have their own date for this event (like birthdays).
                     </p>
                 )}
             </div>
 
             <label className="flex items-center gap-2 mb-4 cursor-pointer">
-                <input type="checkbox" checked={autoAdd} onChange={e => setAutoAdd(e.target.checked)}
-                       className="w-4 h-4 accent-[#B8860B]" />
-                <span className="text-xs text-[#5D4E37]">Automatically add new people to this list</span>
+                <input
+                    type="checkbox"
+                    checked={autoAdd}
+                    onChange={e => setAutoAdd(e.target.checked)}
+                    className="w-4 h-4 accent-gold"
+                />
+                <span className="text-xs text-brown-mid">Automatically add new people to this list</span>
             </label>
 
             <div className="flex gap-2 justify-end">

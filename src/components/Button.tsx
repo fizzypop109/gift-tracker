@@ -1,14 +1,23 @@
+import clsx from "clsx";
+
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: "primary" | "secondary" | "danger" | "christmas" | "birthday";
     small?: boolean;
 }
 
-export const Button = ({ children, variant = "primary", small, ...props }: ButtonProps) => {
-    const base = { padding: small ? "6px 12px" : "9px 18px", borderRadius: 10, fontSize: small ? 12 : 13, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "all .15s", whiteSpace: "nowrap" };
-    const v = variant === "primary" ? { background: "linear-gradient(135deg, #B8860B, #DAA520)", color: "#FFF", border: "none", boxShadow: "0 2px 8px rgba(184,134,11,0.3)" }
-        : variant === "danger" ? { background: "#FFF", color: "#C62828", border: "1.5px solid #FFCDD2" }
-            : variant === "christmas" ? { background: "linear-gradient(135deg, #1B5E20, #2E7D32)", color: "#FFF", border: "none" }
-                : variant === "birthday" ? { background: "linear-gradient(135deg, #AD1457, #D81B60)", color: "#FFF", border: "none" }
-                    : { background: "#FFF", color: "#5D4E37", border: "1.5px solid #D4C4AE" };
-    return <button {...props} style={{ ...base, ...v, ...(props.style || {}) }}>{children}</button>;
+export const Button = ({ children, variant = "primary", small, className, style, ...props }: ButtonProps) => {
+    const base = clsx(
+        "rounded-[10px] font-semibold font-sans cursor-pointer transition-all duration-150 whitespace-nowrap",
+        small ? "py-[6px] px-3 text-xs" : "py-[9px] px-[18px] text-[13px]"
+    );
+    const v = variant === "primary"
+        ? "bg-[linear-gradient(135deg,var(--color-gold),var(--color-gold-light))] text-white border-none shadow-[0_2px_8px_rgba(184,134,11,0.3)]"
+        : variant === "danger"
+            ? "bg-white text-danger border-[1.5px] border-danger-border"
+            : variant === "christmas"
+                ? "bg-[linear-gradient(135deg,#1B5E20,#2E7D32)] text-white border-none"
+                : variant === "birthday"
+                    ? "bg-[linear-gradient(135deg,#AD1457,#D81B60)] text-white border-none"
+                    : "bg-white text-brown-mid border-[1.5px] border-tan";
+    return <button {...props} style={style} className={clsx(base, v, className)}>{children}</button>;
 }

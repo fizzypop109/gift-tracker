@@ -14,28 +14,55 @@ type ListManageModalProps = {
 export const ListManageModal = ({ open, onClose, receivers, listIds, onToggle, title, accentColor }: ListManageModalProps) => {
     const on = receivers.filter(r => listIds.includes(r.id));
     const off = receivers.filter(r => !listIds.includes(r.id));
+
     return (
         <Modal open={open} onClose={onClose} title={title} width={460}>
-            {off.length > 0 && <>
-                <span style={{ display: "block", fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: "#8B7355", marginBottom: 6 }}>Not on list</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 16 }}>
-                    {off.map(r => <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 12px", borderRadius: 10, border: "1.5px solid #E8DDD0", background: "#FFF" }}>
-                        <span style={{ fontSize: 13 }}>{r.emoji} {r.name}</span>
-                        <button onClick={() => onToggle(r.id)} style={{ padding: "4px 12px", borderRadius: 8, border: "1.5px solid #C8E6C9", background: "#E8F5E9", color: "#1B5E20", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>+ Add</button>
-                    </div>)}
-                </div>
-            </>}
-            {on.length > 0 && <>
-                <span style={{ display: "block", fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, color: "#8B7355", marginBottom: 6 }}>On the list</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 14 }}>
-                    {on.map(r => <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${accentColor}33`, background: `${accentColor}0A` }}>
-                        <span style={{ fontSize: 13 }}>{r.emoji} {r.name}{r.birthday ? ` · 🎂 ${formatDate(r.birthday)}` : ""}</span>
-                        <button onClick={() => onToggle(r.id)} style={{ padding: "4px 12px", borderRadius: 8, border: "1.5px solid #FFCDD2", background: "#FFF", color: "#C62828", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Remove</button>
-                    </div>)}
-                </div>
-            </>}
-            {receivers.length === 0 && <p style={{ textAlign: "center", color: "#8B7355", fontSize: 12, padding: 16 }}>Add people from the main Gifts tab first.</p>}
-            <div style={{ display: "flex", justifyContent: "flex-end" }}><Button variant="secondary" onClick={onClose}>Done</Button></div>
+            {off.length > 0 && (
+                <>
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.8px] text-brown-muted mb-[6px]">Not on list</span>
+                    <div className="flex flex-col gap-[5px] mb-4">
+                        {off.map(r => (
+                            <div key={r.id} className="flex items-center justify-between px-3 py-[9px] rounded-[10px] border-[1.5px] border-cream-subtle bg-white">
+                                <span className="text-[13px]">{r.emoji} {r.name}</span>
+                                <button
+                                    onClick={() => onToggle(r.id)}
+                                    className="px-3 py-1 rounded-lg border-[1.5px] border-purchased-border bg-purchased-bg text-purchased-text text-[11px] font-semibold cursor-pointer font-sans"
+                                >
+                                    + Add
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+            {on.length > 0 && (
+                <>
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.8px] text-brown-muted mb-[6px]">On the list</span>
+                    <div className="flex flex-col gap-[5px] mb-[14px]">
+                        {on.map(r => (
+                            <div
+                                key={r.id}
+                                className="flex items-center justify-between px-3 py-[9px] rounded-[10px]"
+                                style={{ border: `1.5px solid ${accentColor}33`, background: `${accentColor}0A` }}
+                            >
+                                <span className="text-[13px]">{r.emoji} {r.name}{r.birthday ? ` · 🎂 ${formatDate(r.birthday)}` : ""}</span>
+                                <button
+                                    onClick={() => onToggle(r.id)}
+                                    className="px-3 py-1 rounded-lg border-[1.5px] border-danger-border bg-white text-danger text-[11px] font-semibold cursor-pointer font-sans"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+            {receivers.length === 0 && (
+                <p className="text-center text-brown-muted text-xs p-4">Add people from the main Gifts tab first.</p>
+            )}
+            <div className="flex justify-end">
+                <Button variant="secondary" onClick={onClose}>Done</Button>
+            </div>
         </Modal>
     );
 }

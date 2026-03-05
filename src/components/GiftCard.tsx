@@ -17,9 +17,7 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
     return (
         <div className={clsx(
             "rounded-xl border transition-all duration-200",
-            isPurchased
-                ? "bg-[#F6FFF6] border-[#C8E6C9]"
-                : "bg-white border-[#EDE5D8]",
+            isPurchased ? "bg-purchased-card border-purchased-border" : "bg-white border-cream-border",
             isMobile ? "p-3" : compact ? "px-3.5 py-3" : "px-4 py-3.5"
         )}>
             <div className="flex justify-between items-start mb-1">
@@ -30,8 +28,8 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
                         className={clsx(
                             "shrink-0 size-5 rounded-md border-2 flex items-center justify-center cursor-pointer transition-all duration-200",
                             isPurchased
-                                ? "bg-[#4CAF50] border-[#4CAF50]"
-                                : "bg-white border-[#D4C4AE] hover:border-[#4CAF50]"
+                                ? "bg-purchased border-purchased"
+                                : "bg-white border-tan hover:border-purchased"
                         )}
                     >
                         {isPurchased && (
@@ -45,13 +43,13 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
                         <div className={clsx(
                             "font-semibold mb-0.5 transition-all duration-200",
                             isMobile ? "text-[13px]" : "text-sm",
-                            isPurchased ? "line-through text-[#8B7355]" : "text-[#2D1810]"
+                            isPurchased ? "line-through text-brown-muted" : "text-brown"
                         )}>
                             {gift.name}
                         </div>
 
                         {!compact && (
-                            <div className="text-[11px] text-[#8B7355]">
+                            <div className="text-[11px] text-brown-muted">
                                 for {receiver?.emoji} {receiver?.name} · {gift.occasion}
                             </div>
                         )}
@@ -62,7 +60,7 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
                     <div className={clsx(
                         "font-fraunces font-bold ml-2 transition-all duration-200",
                         isMobile ? "text-[15px]" : "text-[17px]",
-                        isPurchased ? "text-[#4CAF50]" : "text-[#B8860B]"
+                        isPurchased ? "text-purchased" : "text-gold"
                     )}>
                         ${parseFloat(gift.price).toFixed(2)}
                     </div>
@@ -72,17 +70,17 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
             <div className="flex items-center justify-between mt-1.5 flex-wrap gap-1.5">
                 <div className="flex items-center gap-1.5">
                     {isPurchased ? (
-                        <span className="inline-flex items-center gap-1 bg-[#E8F5E9] text-[#1B5E20] px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide">
+                        <span className="inline-flex items-center gap-1 bg-purchased-bg text-purchased-text px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide">
                             ✓ Purchased
                         </span>
                     ) : (
-                        <span className="inline-flex items-center gap-1 bg-[#FFF3E0] text-[#E65100] px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide">
+                        <span className="inline-flex items-center gap-1 bg-idea-bg text-idea-text px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide">
                             ○ Idea
                         </span>
                     )}
 
                     {gift.url && (
-                        <a href={gift.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[#B8860B] no-underline font-semibold">
+                        <a href={gift.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-gold no-underline font-semibold">
                             🔗
                         </a>
                     )}
@@ -91,14 +89,14 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
                 <div className="flex gap-1">
                     <button
                         onClick={() => onEdit(gift)}
-                        className="size-[22px] rounded-md border border-[#E8DDD0] bg-white cursor-pointer text-[10px] flex items-center justify-center hover:bg-[#FFF8E1] transition-colors"
+                        className="size-[22px] rounded-md border border-cream-subtle bg-white cursor-pointer text-[10px] flex items-center justify-center hover:bg-gold-tint transition-colors"
                     >
                         ✏️
                     </button>
 
                     <button
                         onClick={() => onDelete(gift.id)}
-                        className="size-[22px] rounded-md border border-[#FFCDD2] bg-white cursor-pointer text-[10px] flex items-center justify-center hover:bg-[#FFF0F0] transition-colors"
+                        className="size-[22px] rounded-md border border-danger-border bg-white cursor-pointer text-[10px] flex items-center justify-center hover:bg-danger-hover transition-colors"
                     >
                         🗑
                     </button>
@@ -108,7 +106,7 @@ export const GiftCard = ({gift, receiver, onEdit, onDelete, onStatusChange, comp
             {gift.notes && (
                 <div className={clsx(
                     "text-[11px] mt-1.5 italic leading-snug",
-                    isPurchased ? "text-[#A5D6A7]" : "text-[#8B7355]"
+                    isPurchased ? "text-purchased-notes" : "text-brown-muted"
                 )}>
                     {gift.notes}
                 </div>

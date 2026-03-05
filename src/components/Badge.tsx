@@ -1,4 +1,4 @@
-import {STATUS_COLORS} from "@/utils";
+import clsx from "clsx";
 import {Status} from "@/types";
 
 type BadgeProps = {
@@ -6,6 +6,17 @@ type BadgeProps = {
 }
 
 export const Badge = ({ status }: BadgeProps) => {
-    const c = status ? STATUS_COLORS[status] : STATUS_COLORS.Idea;
-    return <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: c.bg, color: c.text, padding: "2px 9px", borderRadius: 20, fontSize: 10, fontWeight: 600, letterSpacing: 0.3, textTransform: "uppercase" }}><span style={{ width: 5, height: 5, borderRadius: "50%", background: c.dot }} />{status}</span>;
+    const isPurchased = status === "Purchased";
+    return (
+        <span className={clsx(
+            "inline-flex items-center gap-1 px-[9px] py-[2px] rounded-[20px] text-[10px] font-semibold tracking-[0.3px] uppercase",
+            isPurchased ? "bg-purchased-bg text-purchased-text" : "bg-idea-bg text-idea-text"
+        )}>
+            <span className={clsx(
+                "size-[5px] rounded-full",
+                isPurchased ? "bg-purchased" : "bg-idea-dot"
+            )} />
+            {status}
+        </span>
+    );
 }
