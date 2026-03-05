@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import {useState} from "react";
 import {Button, ListManageModal, BudgetModal} from "@/components";
-import {daysUntil} from "@/utils";
+import {daysUntil, turningAge} from "@/utils";
 import {GiftCard} from "@/components/GiftCard";
 import {useIsMobile, useApp} from "@/hooks";
 import {Gift, Receiver, Status, OccasionConfig} from "@/types";
@@ -69,9 +69,8 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
 
                         <div className="flex gap-1.5">
                             <Button variant="secondary" small onClick={() => setBudgetOpen(true)} className="!bg-white/[12%] !text-white !border-white/20">💰</Button>
-                            <Button variant="secondary" small onClick={() => setManageOpen(true)} className="!bg-white/[12%] !text-white !border-white/20">👥 Manage</Button>
                             <Button variant="secondary" small onClick={onEditOccasion} className="!bg-white/[12%] !text-white !border-white/20">✏️</Button>
-                            <Button variant="secondary" small onClick={onDeleteOccasion} className="!bg-white/[12%] !text-white !border-white/20">🗑</Button>
+                            <Button variant="secondary" small onClick={onDeleteOccasion} className="!bg-danger-bar/[70%] !text-white !border-white/20">🗑</Button>
                         </div>
                     </div>
 
@@ -114,7 +113,7 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
                         const spent = pg.filter(g => g.status !== "Idea").reduce((s, g) => s + (parseFloat(g.price) || 0), 0);
                         const budget = budgets[`${r.id}:${config.label}`] || 0;
                         const isExpanded = expanded === r.id;
-                        const bdayInfo = config.id === "birthday" && r.birthday ? `${daysUntil(r.birthday)} day${daysUntil(r.birthday) !== 1 ? "s" : ""} away` : null;
+                        const bdayInfo = config.id === "birthday" && r.birthday ? `${daysUntil(r.birthday)} day${daysUntil(r.birthday) !== 1 ? "s" : ""} away · Turning ${turningAge(r.birthday)}` : null;
 
                         return (
                             <div key={r.id} className="bg-white rounded-xl border border-cream-border overflow-hidden">
@@ -126,14 +125,17 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
                                     )}
                                 >
                                     <span className={clsx(isMobile ? "text-2xl" : "text-[26px]")}>{r.emoji}</span>
+
                                     <div className="flex-1 min-w-0">
                                         <div className={clsx("font-semibold text-brown", isMobile ? "text-sm" : "text-[15px]")}>{r.name}</div>
+
                                         <div className="text-[11px] text-brown-muted mt-px">
                                             {pg.length} gift{pg.length !== 1 ? "s" : ""}
                                             {budget > 0 && ` · $${spent.toFixed(0)}/$${budget.toFixed(0)}`}
                                             {bdayInfo && ` · ${bdayInfo}`}
                                         </div>
                                     </div>
+
                                     <div className="flex gap-[3px] mr-2 shrink-0">
                                         {pg.slice(0, 8).map(g => (
                                             <span
@@ -146,6 +148,7 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
                                         ))}
                                         {pg.length === 0 && <span className="text-[10px] text-cream-border">—</span>}
                                     </div>
+
                                     <span
                                         className="text-xs text-brown-muted shrink-0 transition-transform duration-200"
                                         style={{ transform: isExpanded ? "rotate(180deg)" : "none" }}
@@ -189,12 +192,11 @@ export const OccasionListView = ({ config, headerSubtitle, countdownLabel, count
                         );
                     })}
 
-                    {/* Quick add person */}
                     <button
-                        onClick={onAddPerson}
+                        onClick={() => setManageOpen(true)}
                         className="flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-tan bg-transparent cursor-pointer font-sans text-[13px] font-semibold text-brown-muted transition-all duration-150 w-full hover:border-gold hover:text-gold"
                     >
-                        + Add New Person
+                        {`🔧 Manage ${config.label} List`}
                     </button>
                 </div>
             )}

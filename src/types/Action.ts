@@ -1,4 +1,4 @@
-import {Receiver} from "@/types/Receiver";
+import {PersonalEvent, Receiver} from "@/types/Receiver";
 import {Gift} from "@/types/Gift";
 import {OccasionConfig} from "@/types/Occasion";
 import {AppState} from "@/utils";
@@ -15,4 +15,7 @@ export type Action =
     | { type: "TOGGLE_LIST"; payload: { list: string; id: string } }
     | { type: "ADD_OCCASION"; payload: OccasionConfig }
     | { type: "EDIT_OCCASION"; payload: Partial<OccasionConfig> & { id: string } }
-    | { type: "DELETE_OCCASION"; payload: string };
+    | { type: "DELETE_OCCASION"; payload: string }
+    | { type: "ADD_PERSONAL_EVENT"; payload: { receiverId: string; event: PersonalEvent } }
+    | { type: "EDIT_PERSONAL_EVENT"; payload: { receiverId: string; event: PersonalEvent } }
+    | { type: "DELETE_PERSONAL_EVENT"; payload: { receiverId: string; eventId: string } }

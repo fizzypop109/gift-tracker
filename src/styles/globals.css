@@ -45,6 +45,8 @@
   --color-purchased: #4CAF50;
   --color-purchased-text: #1B5E20;
 
+  --color-people: #2196F3;
+
   /* Danger */
   --color-danger: #C62828;
   --color-danger-border: #FFCDD2;
@@ -79,6 +81,15 @@ body {
   border-radius: 3px;
 }
 
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -88,4 +99,14 @@ body {
     opacity: 1;
     transform: scale(1)
   }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

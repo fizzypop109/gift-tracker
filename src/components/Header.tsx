@@ -1,21 +1,30 @@
-import {Button} from "@/components/Button";
 import clsx from "clsx";
-import {Dispatch, SetStateAction} from "react";
-import {Gift, GiftDefault, ModalState, Receiver, Tab} from "@/types";
+import { Tab} from "@/types";
+import {useApp} from "@/hooks";
 
 type HeaderProps = {
-    tabs: Tab[];
     selectedTab: string;
     onTabClick: (id: string) => void;
-    sidebarOpen: boolean;
-    setSidebarOpen: (open: boolean) => void;
-    setReceiverModal: Dispatch<SetStateAction<ModalState<Receiver>>>
-    setGiftModal: Dispatch<SetStateAction<ModalState<Gift>>>
-    setBudgetModal: (open: boolean) => void;
-    setGiftDefaults: Dispatch<SetStateAction<GiftDefault | null>>
 }
 
-export const Header = ({ selectedTab, tabs, onTabClick, sidebarOpen, setSidebarOpen, setReceiverModal, setGiftModal, setBudgetModal, setGiftDefaults }: HeaderProps) => {
+export const Header = ({ selectedTab, onTabClick }: HeaderProps) => {
+    const { state } = useApp();
+    const { gifts, occasions } = state;
+
+    const occasionTabs = occasions.map(o => ({
+        id: o.id,
+        label: `${o.icon} ${o.label}`,
+        short: o.icon,
+        count: (state.lists[o.id] || []).length,
+    }));
+
+    const tabs: Tab[] = [
+        {id: "home", label: "🏠 Home", short: "🏠"},
+        {id: "gifts", label: "🎁 Gifts", short: "🎁", count: gifts.length},
+        ...occasionTabs,
+        {id: "_add", label: "+ Event", short: "+"},
+    ];
+
     return (
         <header className="bg-[linear-gradient(135deg,var(--color-brown),var(--color-brown-deep))] px-4 md:px-5 pt-3.5 md:pt-5 relative overflow-hidden">
             <div className="relative w-full">
@@ -29,55 +38,10 @@ export const Header = ({ selectedTab, tabs, onTabClick, sidebarOpen, setSidebarO
                             Keep every gift idea organised
                         </p>
                     </div>
-
-                    <div className="flex gap-1.5">
-                        <Button
-                            small
-                            variant="secondary"
-                            className="!bg-white/10 !text-white !border-white/20"
-                            onClick={() => setReceiverModal({ open: true, initial: null })}
-                        >
-                            + Person
-                        </Button>
-
-                        {selectedTab === "gifts" && (
-                            <Button
-                                small
-                                variant="secondary"
-                                className="hidden md:block !bg-white/10 !text-white !border-white/20"
-                                onClick={() => setBudgetModal(true)}
-                            >
-                                💰
-                            </Button>
-                        )}
-
-                        {selectedTab === "gifts" && (
-                            <Button
-                                small
-                                onClick={() => {
-                                    setGiftDefaults(null);
-                                    setGiftModal({ open: true, initial: null });
-                                }}
-                            >
-                                + Gift
-                            </Button>
-                        )}
-
-                        {selectedTab === "gifts" && (
-                            <Button
-                                small
-                                variant="secondary"
-                                className="md:hidden !bg-white/10 !text-white !border-white/20"
-                                onClick={() => setSidebarOpen(!sidebarOpen)}
-                            >
-                                ☰
-                            </Button>
-                        )}
-                    </div>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex overflow-x-auto">
+                <div className="flex overflow-x-auto no-scrollbar">
                     {tabs.map(t => (
                         <button
                             key={t.id}
@@ -89,18 +53,26 @@ export const Header = ({ selectedTab, tabs, onTabClick, sidebarOpen, setSidebarO
                             )}
                             onClick={() => onTabClick(t.id)}
                         >
-                            <span className="md:hidden">{t.short}</span>
-                            <span className="hidden md:inline">{t.label}</span>
-                            <span
-                                className={clsx(
-                                    "ml-1.5 py-px px-1 rounded-[10px] text-[10px]",
-                                    selectedTab === t.id
-                                        ? "bg-cream-border text-brown-mid"
-                                        : "bg-white/10 text-white/50"
-                                )}
-                            >
-                                {t.count}
+                            <span className="md:hidden">
+                                {t.short}
                             </span>
+
+                            <span className="hidden md:inline">
+                                {t.label}
+                            </span>
+
+                            {t.count !== undefined && (
+                                <span
+                                    className={clsx(
+                                        "ml-1.5 py-px px-1 rounded-[10px] text-[10px]",
+                                        selectedTab === t.id
+                                            ? "bg-cream-border text-brown-mid"
+                                            : "bg-white/10 text-white/50"
+                                    )}
+                                >
+                                    {t.count}
+                                </span>
+                            )}
                         </button>
                     ))}
                 </div>

@@ -2,12 +2,10 @@ import clsx from "clsx";
 import {useEffect, useState} from "react";
 import {Modal, Input, Select, Button} from "@/components";
 import {STATUS_OPTIONS} from "@/utils";
-import {Gift, Status} from "@/types";
+import {Gift, ModalProps, Status} from "@/types";
 
-type GiftModalProps = {
-    open: boolean;
+type GiftModalProps = ModalProps & {
     occasions: string[];
-    onClose: () => void;
     onSave: (gift: Omit<Gift, "id">) => void;
     initial: Gift | null;
     receivers: { id: string, name: string, emoji: string }[];

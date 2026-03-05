@@ -105,6 +105,38 @@ export const reducer = (state: AppState, action: Action): AppState => {
                 lists: remainingLists,
             };
         }
+        case "ADD_PERSONAL_EVENT":
+            return {
+                ...state,
+                receivers: state.receivers.map(r =>
+                    r.id === action.payload.receiverId
+                        ? { ...r, personalEvents: [...(r.personalEvents || []), action.payload.event] }
+                        : r
+                ),
+            };
+        case "EDIT_PERSONAL_EVENT":
+            return {
+                ...state,
+                receivers: state.receivers.map(r =>
+                    r.id === action.payload.receiverId
+                        ? {
+                            ...r,
+                            personalEvents: (r.personalEvents || []).map(e =>
+                                e.id === action.payload.event.id ? action.payload.event : e
+                            ),
+                        }
+                        : r
+                ),
+            };
+        case "DELETE_PERSONAL_EVENT":
+            return {
+                ...state,
+                receivers: state.receivers.filter(r =>
+                    r.id === action.payload.receiverId
+                        ? { ...r, personalEvents: (r.personalEvents || []).filter(e => e.id !== action.payload.eventId) }
+                        : r
+                ),
+            };
         default:
             return state;
     }

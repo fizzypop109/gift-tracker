@@ -1,4 +1,5 @@
 import {OCCASIONS} from "@/utils";
+import {PersonalEvent, Receiver} from "@/types/Receiver";
 
 export type Occasion = (typeof OCCASIONS)[number];
 
@@ -14,5 +15,11 @@ export type OccasionConfig = {
     date: OccasionDateType;
     accentColor: string;
     accentGradient: string;
-    autoAdd: boolean;       // auto-add new receivers to this list
+    autoAdd: boolean;
+    scope: "global"; // only global events live here now
 }
+
+export type UpcomingEvent =
+    | { type: "birthday"; label: string; days: number; original: Receiver }
+    | { type: "occasion"; label: string; days: number; original: OccasionConfig; totalGifts: number; purchased: number }
+    | { type: "personal"; label: string; days: number; original: PersonalEvent; receiver: Receiver };

@@ -1,9 +1,11 @@
 import {useState} from "react";
-import {ReceiverModal, GiftModal, BudgetModal, GiftCard, Button, OccasionListView, Sidebar, Header, OccasionModal} from "@/components";
-import {useApp, useIsMobile} from "@/hooks";
-import {daysUntil, getNextOccasionDate, STATUS_OPTIONS} from "@/utils";
-import {Gift, GiftDefault, ModalState, OccasionConfig, Receiver, Status, Tab} from "@/types";
-import clsx from "clsx";
+import {
+    ReceiverModal, GiftModal, BudgetModal, OccasionListView, Header, OccasionModal, HomeView,
+    AllGiftsView, PersonModal
+} from "@/components";
+import {useApp} from "@/hooks";
+import {daysUntil, getNextOccasionDate} from "@/utils";
+import {Gift, GiftDefault, ModalState, OccasionConfig, Receiver, Status} from "@/types";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
@@ -31,30 +33,17 @@ const getOccasionSubtitle = (config: OccasionConfig, upcoming: Receiver[]): stri
 };
 
 export const GiftTracker = () => {
-    const isMobile = useIsMobile();
-
     const { state, dispatch } = useApp();
-    const {receivers, gifts, budgets, occasions} = state;
+    const {receivers, budgets, occasions} = state;
 
-    const [tab, setTab] = useState("gifts");
+    const [tab, setTab] = useState("home");
     const [view, setView] = useState("all");
-    const [filterOccasion, setFilterOccasion] = useState("All");
-    const [filterStatus, setFilterStatus] = useState("All");
-    const [search, setSearch] = useState("");
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
     const [receiverModal, setReceiverModal] = useState<ModalState<Receiver>>({open: false});
     const [giftModal, setGiftModal] = useState<ModalState<Gift>>({open: false});
     const [giftDefaults, setGiftDefaults] = useState<GiftDefault | null>(null);
     const [budgetModal, setBudgetModal] = useState(false);
     const [occasionModal, setOccasionModal] = useState<ModalState<OccasionConfig>>({open: false});
-
-    const filteredGifts = gifts.filter((g: Gift) => {
-        if (view !== "all" && g.receiverId !== view) return false;
-        if (filterOccasion !== "All" && g.occasion !== filterOccasion) return false;
-        if (filterStatus !== "All" && g.status !== filterStatus) return false;
-        if (search && !g.name.toLowerCase().includes(search.toLowerCase())) return false;
-        return true;
-    });
 
     const upcoming = [...receivers]
         .filter(r => r.birthday)
@@ -98,30 +87,6 @@ export const GiftTracker = () => {
         setGiftModal({open: true, initial: null});
     };
 
-    const budgetInfo = (() => {
-        if (view === "all" || filterOccasion === "All") return null;
-        const key = `${view}:${filterOccasion}`;
-        const budget = budgets[key] || 0;
-        if (!budget) return null;
-        const spent = gifts
-            .filter((g: Gift) => g.receiverId === view && g.occasion === filterOccasion && g.status !== "Idea")
-            .reduce((s: number, g: Gift) => s + (parseFloat(g.price) || 0), 0);
-        return {budget, spent, pct: Math.min((spent / budget) * 100, 100)};
-    })();
-
-    const occasionTabs = occasions.map(o => ({
-        id: o.id,
-        label: `${o.icon} ${o.label}`,
-        short: o.icon,
-        count: (state.lists[o.id] || []).length,
-    }));
-
-    const tabs: Tab[] = [
-        {id: "gifts", label: "🎁 Gifts", short: "🎁", count: gifts.length},
-        ...occasionTabs,
-        {id: "_add", label: "+ Event", short: "+", count: 0},
-    ];
-
     const occasionLabels = occasions.map(o => o.label);
 
     const selectedReceiver = view !== "all" ? receivers.find((x: Receiver) => x.id === view) : null;
@@ -131,29 +96,46 @@ export const GiftTracker = () => {
             setOccasionModal({open: true, initial: null});
         } else {
             setTab(id);
-            setSidebarOpen(false);
         }
     };
 
     return (
-        <div className="w-full font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)] min-h-svh">
+        <div className="w-full flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)] h-svh">
             <Header
-                tabs={tabs}
                 selectedTab={tab}
                 onTabClick={handleTabClick}
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-                setReceiverModal={setReceiverModal}
-                setGiftModal={setGiftModal}
-                setBudgetModal={setBudgetModal}
-                setGiftDefaults={setGiftDefaults}
             />
 
-            <div className="py-3.5 px-2.5 md:py-4.5 md:px-4">
+            <div className="py-3.5 px-2.5 md:py-4.5 md:px-4 flex-1 overflow-y-scroll">
+                {/* Home Tab */}
+                {tab === "home" && !selectedPerson && (
+                    <HomeView
+                        onNavigate={setTab}
+                        onSelectPerson={setSelectedPerson}
+                        onAddPerson={() => setReceiverModal({open: true, initial: null})}
+                    />
+                )}
+
+                {/* Gifts Tab */}
+                {tab === "gifts" && !selectedPerson && (
+                    <AllGiftsView
+                        view={view}
+                        setView={setView}
+                        setBudgetModal={setBudgetModal}
+                        setGiftDefaults={setGiftDefaults}
+                        setGiftModal={setGiftModal}
+                        setReceiverModal={setReceiverModal}
+                        handleStatusChange={handleStatusChange}
+                        occasionLabels={occasionLabels}
+                        selectedReceiver={selectedReceiver}
+                    />
+                )}
+
                 {/* Dynamic occasion tabs */}
-                {tab !== "gifts" && tab !== "_add" && (() => {
+                {tab !== "gifts" && tab !== "_add" && tab !== "home" && !selectedPerson && (() => {
                     const config = occasions.find(o => o.id === tab);
                     if (!config) return null;
+
                     return (
                         <OccasionListView
                             config={config}
@@ -183,156 +165,21 @@ export const GiftTracker = () => {
                         />
                     );
                 })()}
-
-                {/* Gifts Tab */}
-                {tab === "gifts" && (
-                    <div className="flex gap-4 flex-col md:flex-row">
-                        {isMobile && sidebarOpen && (
-                            <div
-                                className="fixed inset-0 bg-brown/30 z-[500] animate-[fadeIn_.15s_ease]"
-                                onClick={() => setSidebarOpen(false)}
-                            >
-                                <div
-                                    className="absolute top-0 left-0 bottom-0 w-[280px] bg-cream p-3.5 overflow-y-auto shadow-[4px_0_20px_rgba(0,0,0,0.1)]"
-                                    onClick={e => e.stopPropagation()}
-                                >
-                                    <div className="flex justify-between items-center mb-3">
-                                        <span className="font-fraunces text-lg font-bold text-brown">People</span>
-                                        <button className="bg-transparent border-none text-lg cursor-pointer text-brown-muted" onClick={() => setSidebarOpen(false)}>✕</button>
-                                    </div>
-
-                                    <Sidebar
-                                        view={view}
-                                        setView={setView}
-                                        receivers={receivers}
-                                        gifts={gifts}
-                                        upcoming={upcoming}
-                                        setSidebarOpen={setSidebarOpen}
-                                        setReceiverModal={setReceiverModal}
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {!isMobile && (
-                            <Sidebar
-                                view={view}
-                                setView={setView}
-                                receivers={receivers}
-                                gifts={gifts}
-                                upcoming={upcoming}
-                                setSidebarOpen={setSidebarOpen}
-                                setReceiverModal={setReceiverModal}
-                            />
-                        )}
-
-                        <div className="flex-1 min-w-0">
-                            {isMobile && selectedReceiver && (
-                                <div className="flex items-center gap-1.5 mb-2.5 px-2.5 py-1.5 bg-gold-tint rounded-full border-[1.5px] border-gold-light w-fit text-xs font-semibold">
-                                    {selectedReceiver.emoji} {selectedReceiver.name}
-                                    <button className="bg-transparent border-none cursor-pointer text-xs text-brown-muted ml-1" onClick={() => setView("all")}>✕</button>
-                                </div>
-                            )}
-
-                            <div className="flex gap-1.5 mb-3 flex-wrap">
-                                <input
-                                    type="text"
-                                    placeholder="Search..."
-                                    value={search}
-                                    onChange={e => setSearch(e.target.value)}
-                                    className={clsx(
-                                        "flex-1 py-[7px] px-2.5 border-[1.5px] border-tan rounded-[10px] text-xs font-sans bg-white outline-none focus:border-gold",
-                                        isMobile ? "min-w-[100px]" : "min-w-[120px]"
-                                    )}
-                                />
-                                <select
-                                    value={filterOccasion}
-                                    onChange={e => setFilterOccasion(e.target.value)}
-                                    className="py-[7px] px-2 border-[1.5px] border-tan rounded-[10px] text-[11px] font-sans bg-white"
-                                >
-                                    <option value="All">All Occasions</option>
-                                    {occasionLabels.map(o => (
-                                        <option key={o} value={o}>{o}</option>
-                                    ))}
-                                </select>
-                                <select
-                                    value={filterStatus}
-                                    onChange={e => setFilterStatus(e.target.value)}
-                                    className="py-[7px] px-2 border-[1.5px] border-tan rounded-[10px] text-[11px] font-sans bg-white"
-                                >
-                                    <option value="All">All Status</option>
-                                    {STATUS_OPTIONS.map(s => (
-                                        <option key={s} value={s}>{s}</option>
-                                    ))}
-                                </select>
-                                {isMobile && (
-                                    <Button variant="secondary" small onClick={() => setBudgetModal(true)}>💰</Button>
-                                )}
-                            </div>
-
-                            {budgetInfo && (
-                                <div className="mb-3 p-2.5 px-3.5 bg-white rounded-[10px] border border-cream-border">
-                                    <div className="flex justify-between text-[11px] mb-1">
-                                        <span className="text-brown-muted">Budget</span>
-                                        <span className={clsx("font-semibold", budgetInfo.spent > budgetInfo.budget ? "text-danger" : "text-brown")}>
-                                            ${budgetInfo.spent.toFixed(2)} / ${budgetInfo.budget.toFixed(2)}
-                                        </span>
-                                    </div>
-                                    <div className="h-[5px] bg-cream-border rounded-sm overflow-hidden">
-                                        <div
-                                            className={clsx(
-                                                "h-full rounded-sm transition-[width] duration-300",
-                                                budgetInfo.spent > budgetInfo.budget
-                                                    ? "bg-danger-bar"
-                                                    : "bg-[linear-gradient(90deg,var(--color-gold),var(--color-gold-light))]"
-                                            )}
-                                            style={{width: `${budgetInfo.pct}%`}}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {filteredGifts.length === 0 ? (
-                                <div className="text-center py-12 px-4 text-brown-muted">
-                                    <div className="text-[44px] mb-2.5">🎀</div>
-                                    <div className="font-fraunces text-[17px] font-semibold mb-1.5 text-brown">
-                                        {gifts.length === 0 ? "No gifts yet" : "No matches"}
-                                    </div>
-                                    <p className="text-xs leading-normal max-w-[260px] mx-auto">
-                                        {receivers.length === 0
-                                            ? "Add someone to get started!"
-                                            : "Try adjusting your filters or add a new gift."}
-                                    </p>
-                                    <div className="flex gap-2 justify-center mt-3 flex-wrap">
-                                        {receivers.length === 0 && (
-                                            <Button small onClick={() => setReceiverModal({open: true, initial: null})}>+ Add Person</Button>
-                                        )}
-                                        {receivers.length > 0 && (
-                                            <Button small onClick={() => { setGiftDefaults(null); setGiftModal({open: true, initial: null}); }}>+ Add Gift</Button>
-                                        )}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col gap-1.5">
-                                    {filteredGifts.map((g: Gift) => (
-                                        <GiftCard
-                                            key={g.id}
-                                            gift={g}
-                                            receiver={receivers.find((r: Receiver) => r.id === g.receiverId)}
-                                            onEdit={gift => { setGiftDefaults(null); setGiftModal({open: true, initial: gift}); }}
-                                            onDelete={id => { if (confirm("Delete?")) dispatch({type: "DELETE_GIFT", payload: id}); }}
-                                            onStatusChange={handleStatusChange}
-                                            isMobile={isMobile}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
             </div>
 
             {/* Modals */}
+
+            <PersonModal
+                open={selectedPerson !== null}
+                selectedPerson={selectedPerson}
+                onStatusChange={handleStatusChange}
+                setReceiverModal={setReceiverModal}
+                onClose={() => setSelectedPerson(null)}
+                onEditGift={g => { setGiftDefaults(null); setGiftModal({open: true, initial: g}); }}
+                onDeleteGift={id => { if (confirm("Delete?")) dispatch({type: "DELETE_GIFT", payload: id}); }}
+                onAddGift={(rid, occasion) => openGiftModalFor(rid, occasion || "")}
+            />
+
             <ReceiverModal
                 open={receiverModal.open}
                 initial={receiverModal.open ? receiverModal.initial : null}

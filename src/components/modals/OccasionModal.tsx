@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import {useState, useEffect} from "react";
 import {Modal, Input, Button} from "@/components";
-import {OccasionConfig, OccasionDateType} from "@/types";
+import {ModalProps, OccasionConfig, OccasionDateType} from "@/types";
 
 const ICONS = ["🎄","🎂","💝","💐","👔","🎃","🐣","🎆","🥂","🎁","🌟","🎉","💍","🧧","🕎"];
 const COLORS = [
@@ -15,9 +15,7 @@ const COLORS = [
     { color: "#FFB300", gradient: "linear-gradient(135deg, #E65100, #FF8F00, #FFB300)" },
 ];
 
-type OccasionModalProps = {
-    open: boolean;
-    onClose: () => void;
+type OccasionModalProps = ModalProps & {
     onSave: (config: OccasionConfig) => void;
     initial?: OccasionConfig | null;
 }
@@ -79,6 +77,7 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
             accentColor: c.color,
             accentGradient: c.gradient,
             autoAdd,
+            scope: "global",
         });
 
         onClose();

@@ -1,9 +1,8 @@
 import {Modal, Button} from "@/components";
 import {formatDate} from "@/utils";
+import {ModalProps} from "@/types";
 
-type ListManageModalProps = {
-    open: boolean;
-    onClose: () => void;
+type ListManageModalProps = ModalProps & {
     receivers: { id: string, name: string, emoji: string, birthday: string }[];
     listIds: string[];
     onToggle: (id: string) => void;

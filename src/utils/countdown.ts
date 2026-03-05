@@ -24,3 +24,19 @@ export const getNextOccasionDate = (config: OccasionDateType, year: number): Dat
             return null;
     }
 };
+
+export const turningAge = (birthday: string): number | null => {
+    if (!birthday) return null;
+    const birth = new Date(birthday + "T00:00:00");
+    const birthYear = birth.getFullYear();
+    if (birthYear < 1900 || birthYear > new Date().getFullYear()) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const nextBirthday = new Date(birthday + "T00:00:00");
+    nextBirthday.setFullYear(today.getFullYear());
+    if (nextBirthday < today) nextBirthday.setFullYear(today.getFullYear() + 1);
+
+    return nextBirthday.getFullYear() - birthYear;
+};

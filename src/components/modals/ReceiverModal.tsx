@@ -1,11 +1,9 @@
 import clsx from "clsx";
 import {useEffect, useState} from "react";
 import {Modal, Input, Button} from "@/components";
-import {Receiver} from "@/types";
+import {ModalProps, Receiver} from "@/types";
 
-type ReceiverModalProps = {
-    open: boolean;
-    onClose: () => void;
+type ReceiverModalProps = ModalProps & {
     onSave: (receiver: Omit<Receiver, "id">) => void;
     initial: Receiver | null;
 }
@@ -57,7 +55,7 @@ export const ReceiverModal = ({ open, onClose, onSave, initial }: ReceiverModalP
                 <Button variant="secondary" onClick={onClose}>Cancel</Button>
                 <Button onClick={() => {
                     if (!name.trim()) return;
-                    onSave({ name: name.trim(), birthday, emoji });
+                    onSave({ name: name.trim(), birthday, emoji, personalEvents: initial?.personalEvents || [] });
                     onClose();
                 }}>Save</Button>
             </div>
