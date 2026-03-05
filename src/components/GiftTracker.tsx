@@ -108,7 +108,7 @@ export const GiftTracker = () => {
 
             <div className="py-3.5 px-2.5 md:py-4.5 md:px-4 flex-1 overflow-y-scroll">
                 {/* Home Tab */}
-                {tab === "home" && !selectedPerson && (
+                {tab === "home" && (
                     <HomeView
                         onNavigate={setTab}
                         onSelectPerson={setSelectedPerson}
@@ -117,7 +117,7 @@ export const GiftTracker = () => {
                 )}
 
                 {/* Gifts Tab */}
-                {tab === "gifts" && !selectedPerson && (
+                {tab === "gifts" && (
                     <AllGiftsView
                         view={view}
                         setView={setView}
@@ -132,7 +132,7 @@ export const GiftTracker = () => {
                 )}
 
                 {/* Dynamic occasion tabs */}
-                {tab !== "gifts" && tab !== "_add" && tab !== "home" && !selectedPerson && (() => {
+                {tab !== "gifts" && tab !== "_add" && tab !== "home" && (() => {
                     const config = occasions.find(o => o.id === tab);
                     if (!config) return null;
 
