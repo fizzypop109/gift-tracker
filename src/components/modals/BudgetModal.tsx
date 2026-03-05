@@ -11,8 +11,16 @@ type BudgetModalProps = {
 }
 
 export const BudgetModal = ({ open, onClose, onSave, receivers, budgets, occasionFilter }: BudgetModalProps) => {
-    const [lb, setLb] = useState({});
-    useEffect(() => { setLb({ ...budgets }); }, [budgets, open]);
+    const [lb, setLb] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        const stringified: Record<string, string> = {};
+        for (const [k, v] of Object.entries(budgets)) {
+            stringified[k] = String(v);
+        }
+        setLb(stringified);
+    }, [budgets, open]);
+
     const occs = occasionFilter ? [occasionFilter] : ["Christmas", "Birthday"];
 
     return (
