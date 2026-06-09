@@ -65,6 +65,7 @@ export const HomeView = ({onNavigate, onAddPerson, onSelectPerson}: HomeViewProp
     );
 
     const upcoming: UpcomingEvent[] = [...upcomingBirthdays, ...upcomingOccasions, ...upcomingPersonalEvents]
+        .filter(e => e.days >= 0)   // drop expired one-time events so they can't sort ahead of real upcoming ones
         .sort((a, b) => a.days - b.days)
         .slice(0, 6);
 

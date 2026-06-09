@@ -24,9 +24,11 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
     const [label, setLabel] = useState("");
     const [icon, setIcon] = useState("🎁");
     const [colorIdx, setColorIdx] = useState(0);
-    const [dateType, setDateType] = useState<"fixed" | "per-person" | "custom">("fixed");
+    const [dateType, setDateType] = useState<"fixed" | "floating" | "per-person" | "custom">("fixed");
     const [month, setMonth] = useState(1);
     const [day, setDay] = useState(1);
+    const [weekday, setWeekday] = useState(0);
+    const [nth, setNth] = useState(1);
     const [customDate, setCustomDate] = useState("");
     const [autoAdd, setAutoAdd] = useState(true);
 
@@ -41,6 +43,11 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
                 setDateType("fixed");
                 setMonth(initial.date.month);
                 setDay(initial.date.day);
+            } else if (initial.date.type === "floating") {
+                setDateType("floating");
+                setMonth(initial.date.month);
+                setWeekday(initial.date.weekday);
+                setNth(initial.date.nth);
             } else if (initial.date.type === "per-person") {
                 setDateType("per-person");
             } else if (initial.date.type === "custom") {
@@ -54,6 +61,8 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
             setDateType("fixed");
             setMonth(1);
             setDay(1);
+            setWeekday(0);
+            setNth(1);
             setCustomDate("");
             setAutoAdd(true);
         }
@@ -64,6 +73,7 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
 
         let date: OccasionDateType;
         if (dateType === "fixed") date = { type: "fixed", month, day };
+        else if (dateType === "floating") date = { type: "floating", month, weekday, nth };
         else if (dateType === "per-person") date = { type: "per-person" };
         else date = { type: "custom", date: customDate };
 
@@ -84,6 +94,7 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
     };
 
     const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const WEEKDAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
     return (
         <Modal open={open} onClose={onClose} title={initial ? "Edit Event" : "New Event"}>
@@ -129,6 +140,7 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
                 <div className="flex flex-wrap gap-1.5 mb-2">
                     {([
                         { value: "fixed", label: "Same date every year" },
+                        { value: "floating", label: "Floating holiday" },
                         { value: "per-person", label: "Different per person" },
                         { value: "custom", label: "Specific date" },
                     ] as const).map(opt => (
@@ -159,6 +171,33 @@ export const OccasionModal = ({ open, onClose, onSave, initial }: OccasionModalP
                             onChange={e => setDay(Number(e.target.value))}
                             className="w-16 p-2 border border-tan rounded-lg text-sm font-sans bg-white text-center"
                         />
+                    </div>
+                )}
+
+                {dateType === "floating" && (
+                    <div className="flex gap-2">
+                        <select
+                            value={nth}
+                            onChange={e => setNth(Number(e.target.value))}
+                            className="flex-1 p-2 border border-tan rounded-lg text-sm font-sans bg-white"
+                        >
+                            {[{v:1,l:"1st"},{v:2,l:"2nd"},{v:3,l:"3rd"},{v:4,l:"4th"},{v:-1,l:"Last"}].map(o =>
+                                <option key={o.v} value={o.v}>{o.l}</option>)}
+                        </select>
+                        <select
+                            value={weekday}
+                            onChange={e => setWeekday(Number(e.target.value))}
+                            className="flex-1 p-2 border border-tan rounded-lg text-sm font-sans bg-white"
+                        >
+                            {WEEKDAYS.map((w, i) => <option key={w} value={i}>{w}</option>)}
+                        </select>
+                        <select
+                            value={month}
+                            onChange={e => setMonth(Number(e.target.value))}
+                            className="flex-1 p-2 border border-tan rounded-lg text-sm font-sans bg-white"
+                        >
+                            {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+                        </select>
                     </div>
                 )}
 

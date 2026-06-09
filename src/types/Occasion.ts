@@ -4,9 +4,10 @@ import {PersonalEvent, Receiver} from "@/types/Receiver";
 export type Occasion = (typeof OCCASIONS)[number];
 
 export type OccasionDateType =
-    | { type: "fixed"; month: number; day: number }         // e.g. Christmas Dec 25
-    | { type: "per-person" }                                 // uses receiver.birthday or custom date per person
-    | { type: "custom"; date: string }                       // specific date like "2026-06-15"
+    | { type: "fixed"; month: number; day: number }                       // e.g. Christmas Dec 25
+    | { type: "floating"; month: number; weekday: number; nth: number }   // nth weekday of month, e.g. Mother's Day = 2nd Sun May. weekday 0=Sun. nth 1-4 or -1 = last
+    | { type: "per-person" }                                              // uses receiver.birthday or custom date per person
+    | { type: "custom"; date: string }                                    // one-time specific date like "2026-06-15"
 
 export type OccasionConfig = {
     id: string;

@@ -18,6 +18,18 @@ export const getNextOccasionDate = (config: OccasionDateType, year: number): Dat
     switch (config.type) {
         case "fixed":
             return new Date(year, config.month - 1, config.day);
+        case "floating": {
+            const { month, weekday, nth } = config;
+            if (nth === -1) {
+                // last <weekday> of month
+                const last = new Date(year, month, 0); // day 0 of next month = last day of this month
+                const offset = (last.getDay() - weekday + 7) % 7;
+                return new Date(year, month - 1, last.getDate() - offset);
+            }
+            const first = new Date(year, month - 1, 1);
+            const offset = (weekday - first.getDay() + 7) % 7;
+            return new Date(year, month - 1, 1 + offset + (nth - 1) * 7);
+        }
         case "custom":
             return config.date ? new Date(config.date + "T00:00:00") : null;
         case "per-person":

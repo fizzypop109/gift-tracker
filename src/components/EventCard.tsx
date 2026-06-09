@@ -11,8 +11,16 @@ type EventCardProps = {
 
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const NTH = ["", "1st", "2nd", "3rd", "4th"];
+
 const getOccasionDateLabel = (config: OccasionConfig): string => {
     if (config.date.type === "fixed") return `${config.date.day} ${SHORT_MONTHS[config.date.month - 1]}`;
+    if (config.date.type === "floating") {
+        const { month, weekday, nth } = config.date;
+        const nthLabel = nth === -1 ? "Last" : NTH[nth];
+        return `${nthLabel} ${WEEKDAYS[weekday]} ${SHORT_MONTHS[month - 1]}`;
+    }
     if (config.date.type === "custom") return formatDate(config.date.date);
     return "";
 };
