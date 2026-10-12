@@ -3,7 +3,7 @@ import {
     ReceiverModal, GiftModal, BudgetModal, OccasionListView, Header, OccasionModal, HomeView,
     AllGiftsView, PersonModal
 } from "@/components";
-import {useApp} from "@/hooks";
+import {useApp, useResetScrollOnBlur} from "@/hooks";
 import {daysUntil, getNextOccasionDate} from "@/utils";
 import {Gift, GiftDefault, ModalState, OccasionConfig, Receiver, Status} from "@/types";
 
@@ -34,6 +34,7 @@ const getOccasionSubtitle = (config: OccasionConfig, upcoming: Receiver[]): stri
 
 export const GiftTracker = () => {
     const { state, dispatch } = useApp();
+    useResetScrollOnBlur();
     const {receivers, budgets, occasions} = state;
 
     const [tab, setTab] = useState("home");
@@ -100,7 +101,7 @@ export const GiftTracker = () => {
     };
 
     return (
-        <div className="w-full flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)] h-dvh">
+        <div className="fixed inset-0 flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)]">
             <Header
                 selectedTab={tab}
                 onTabClick={handleTabClick}
