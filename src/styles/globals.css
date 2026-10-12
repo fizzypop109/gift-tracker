@@ -69,7 +69,10 @@
    the header brown at the top and the app's cream at the bottom, so it
    never shows the dark-mode black. */
 html {
-  background: linear-gradient(180deg, var(--color-brown) 50%, var(--color-cream-warm) 50%);
+  /* iOS tints its status-bar blur from background-color (gradients are
+     ignored), so this must be a solid brown or the blur turns white. */
+  background-color: var(--color-brown);
+  background-image: linear-gradient(180deg, var(--color-brown) 50%, var(--color-cream-warm) 50%);
 }
 
 body {
