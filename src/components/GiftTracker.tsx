@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {
     ReceiverModal, GiftModal, BudgetModal, OccasionListView, Header, OccasionModal, HomeView,
-    AllGiftsView, PersonModal
+    AllGiftsView, PersonModal, ViewportDebug
 } from "@/components";
 import {useApp, useAppHeight, useResetScrollOnBlur} from "@/hooks";
 import {daysUntil, getNextOccasionDate} from "@/utils";
@@ -102,7 +102,8 @@ export const GiftTracker = () => {
     };
 
     return (
-        <div className="fixed inset-x-0 top-0 h-[var(--app-height,100dvh)] flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)]">
+        <div data-app-shell className="fixed inset-x-0 top-0 h-[var(--app-height,100dvh)] flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)]">
+            <ViewportDebug />
             <Header
                 selectedTab={tab}
                 onTabClick={handleTabClick}
