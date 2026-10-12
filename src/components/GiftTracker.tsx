@@ -101,7 +101,7 @@ export const GiftTracker = () => {
     };
 
     return (
-        <div className="fixed inset-0 flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)]">
+        <div className="fixed inset-x-0 top-0 h-dvh flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)]">
             <Header
                 selectedTab={tab}
                 onTabClick={handleTabClick}
