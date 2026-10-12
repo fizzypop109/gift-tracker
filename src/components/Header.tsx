@@ -26,7 +26,7 @@ export const Header = ({ selectedTab, onTabClick }: HeaderProps) => {
     ];
 
     return (
-        <header className="bg-[linear-gradient(135deg,var(--color-brown),var(--color-brown-deep))] px-4 md:px-5 pt-[calc(0.875rem+env(safe-area-inset-top))] md:pt-[calc(1.25rem+env(safe-area-inset-top))] relative overflow-hidden">
+        <header className="bg-[linear-gradient(135deg,var(--color-brown),var(--color-brown-deep))] px-4 md:px-5 pt-[calc(1.5rem+env(safe-area-inset-top))] md:pt-[calc(1.75rem+env(safe-area-inset-top))] relative overflow-hidden">
             <div className="relative w-full">
                 <div className="flex justify-between items-center pb-3 gap-2">
                     <div className="min-w-0">
