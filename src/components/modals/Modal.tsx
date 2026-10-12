@@ -49,7 +49,7 @@ export const Modal = ({open, onClose, title, children, width}: ModalProps) => {
             <div
                 ref={panelRef}
                 onClick={e => e.stopPropagation()}
-                className="relative bg-surface rounded-t-2xl pt-0 px-5 pb-5 w-full max-h-[90vh] overflow-auto shadow-[0_-10px_40px_rgba(30,20,10,0.2)] border border-cream-subtle border-b-0"
+                className="relative bg-surface rounded-t-2xl pt-0 px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] w-full max-h-[calc(90dvh-env(safe-area-inset-top))] overflow-auto shadow-[0_-10px_40px_rgba(30,20,10,0.2)] border border-cream-subtle border-b-0"
                 style={{
                     maxWidth: width || 440,
                     animation: dragging ? "none" : "slideUp .3s cubic-bezier(0.16, 1, 0.3, 1)",

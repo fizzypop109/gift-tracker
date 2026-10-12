@@ -65,9 +65,16 @@
   box-sizing: border-box;
 }
 
+/* Match the app's bottom colour so any area outside the app shell
+   (safe-area edges, overscroll) is cream, never the dark-mode black. */
+html {
+  background: var(--color-cream-warm);
+}
+
 body {
   margin: 0;
-  background: var(--background);
+  min-height: 100dvh;
+  background: var(--color-cream-warm);
   color: var(--foreground);
   font-family: var(--font-fraunces), Helvetica, sans-serif;
 }

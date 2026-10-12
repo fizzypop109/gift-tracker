@@ -100,13 +100,13 @@ export const GiftTracker = () => {
     };
 
     return (
-        <div className="w-full flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)] h-svh">
+        <div className="w-full flex flex-col overflow-hidden font-sans text-brown bg-[linear-gradient(180deg,var(--color-cream)_0%,var(--color-cream-warm)_100%)] h-dvh">
             <Header
                 selectedTab={tab}
                 onTabClick={handleTabClick}
             />
 
-            <div className="py-3.5 px-2.5 md:py-4.5 md:px-4 flex-1 overflow-y-scroll">
+            <div className="pt-3.5 pb-[calc(0.875rem+env(safe-area-inset-bottom))] px-2.5 md:pt-4.5 md:pb-[calc(1.125rem+env(safe-area-inset-bottom))] md:px-4 flex-1 overflow-y-scroll">
                 {/* Home Tab */}
                 {tab === "home" && (
                     <HomeView
