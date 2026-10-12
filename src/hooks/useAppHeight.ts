@@ -26,10 +26,32 @@ export const useAppHeight = () => {
             document.documentElement.style.setProperty("--app-height", `${height}px`);
         };
 
+        // iOS launches standalone apps with the viewport short by the status
+        // bar height and only fixes it after a scroll. Fake one: make the page
+        // briefly scrollable, nudge it 1px and back.
+        const kick = () => {
+            if (!standalone || window.innerHeight >= Math.max(screen.width, screen.height) - 1) return;
+            const spacer = document.createElement("div");
+            spacer.style.height = "200vh";
+            document.body.appendChild(spacer);
+            window.scrollTo(0, 1);
+            requestAnimationFrame(() => {
+                window.scrollTo(0, 0);
+                spacer.remove();
+            });
+        };
+        const kickTimer = setTimeout(kick, 100);
+        const onVisible = () => {
+            if (document.visibilityState === "visible") setTimeout(kick, 100);
+        };
+        document.addEventListener("visibilitychange", onVisible);
+
         h();
         window.addEventListener("resize", h);
         window.addEventListener("orientationchange", h);
         return () => {
+            clearTimeout(kickTimer);
+            document.removeEventListener("visibilitychange", onVisible);
             window.removeEventListener("resize", h);
             window.removeEventListener("orientationchange", h);
         };
